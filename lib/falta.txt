@@ -1,0 +1,12 @@
+- actualizar los tests
+- describir en los tests qué debe devolver cada función y también que si no pasa me devuelva un Throw
+- poner algunas funciones importantes
+- escribir el codigo de la logica
+- crear el visual
+- como crear medication
+
+Drone
+    serial_number, model, weight_limit, battery_capacity, state
+
+Medication
+    name, weight, code, image
