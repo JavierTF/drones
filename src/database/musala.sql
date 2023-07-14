@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `drone` (
   CONSTRAINT `FK_dron_state` FOREIGN KEY (`state`) REFERENCES `state` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='// from 0 to 10\r\nserial number (100 characters max);\r\nmodel (Lightweight, Middleweight, Cruiserweight, Heavyweight);\r\nweight limit (500gr max);\r\nbattery capacity (percentage);\r\nstate (IDLE, LOADING, LOADED, DELIVERING, DELIVERED, RETURNING).\r\n';
 
--- Volcando datos para la tabla musala.drone: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla musala.drone: ~0 rows (aproximadamente)
 DELETE FROM `drone`;
 /*!40000 ALTER TABLE `drone` DISABLE KEYS */;
 INSERT INTO `drone` (`id`, `serial_number`, `model`, `weight_limit`, `battery_capacity`, `state`) VALUES
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `drone_medication` (
   `id` int(11) NOT NULL,
   `drone_id` tinyint(3) unsigned NOT NULL,
   `medication_id` int(11) NOT NULL,
-  `delivery` datetime DEFAULT NULL,
+  `timelog` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_dron_medication_medication` (`medication_id`),
   KEY `FK_dron_medication_dron` (`drone_id`) USING BTREE,

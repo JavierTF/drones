@@ -3,10 +3,10 @@
 - poner algunas funciones importantes
 - escribir el codigo de la logica
 - crear el visual
-- como crear medication
+- como crear medication? Que Medication solo tenga un textarea y que se le pegue el objeto JSON, si es valido que borre todo y si no que muestre un alert
 
 Drone
-    serial_number, model, weight_limit, battery_capacity, state
+    id, serial_number, model, weight_limit, battery_capacity, state
 
 Medication
-    name, weight, code, image
+    id, name, weight, code, image
