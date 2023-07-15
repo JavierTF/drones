@@ -1,4 +1,5 @@
 - Warning: Extra attributes from the server: cz-shortcut-listen
+- no pasar los test como si fuera objeto.propiedad, dejar la propiedad sola // ya el entorno de pruebas esta configurado, probarlos luego
 - actualizar los tests
 - describir en los tests qué debe devolver cada función y también que si no pasa me devuelva un Throw
 - poner algunas funciones importantes
