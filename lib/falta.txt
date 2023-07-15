@@ -1,3 +1,4 @@
+- quitar el constructor de Drone y de Medication. Para cada uno crear un objeto que es el que se pasa a la api para crearlo
 - Warning: Extra attributes from the server: cz-shortcut-listen
 - no pasar los test como si fuera objeto.propiedad, dejar la propiedad sola // ya el entorno de pruebas esta configurado, probarlos luego
 - actualizar los tests

@@ -113,7 +113,7 @@ const Home = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   const [open, setOpen] = useState({});
-  const [title, setTitle] = useState('Add drone');
+  const [title, setTitle] = useState('Register drone (load medications)');
   const [actionDialog, setActionDialog] = useState('create');
 
   const pathname = usePathname();
