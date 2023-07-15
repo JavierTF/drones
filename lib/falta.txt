@@ -1,3 +1,4 @@
+- Warning: Extra attributes from the server: cz-shortcut-listen
 - actualizar los tests
 - describir en los tests qué debe devolver cada función y también que si no pasa me devuelva un Throw
 - poner algunas funciones importantes

@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
+import CustomizedSnackbars from "./Snackbar";
+import FullScreenDialog from "./Dialog";
+
 import {
   Backdrop,
   Box,
@@ -14,6 +17,7 @@ import {
   Card,
   CardContent,
   Autocomplete,
+  IconButton,
 } from "@mui/material";
 
 import {
@@ -25,6 +29,10 @@ import {
 
 import LocalAirportIcon from "@mui/icons-material/LocalAirport";
 import MedicationIcon from "@mui/icons-material/Medication";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import {
   quitarValoresCero,
@@ -95,9 +103,17 @@ const columnVisibilityModel = {
 };
 
 const Home = () => {
+  const [openSMS, setOpenSMS] = useState({});
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const [open, setOpen] = useState({});
+  const [title, setTitle] = useState('Add drone');
+  const [actionDialog, setActionDialog] = useState('create');
+
   const pathname = usePathname();
 
   const [rows, setRows] = useState([]);
+  const [selectedRow, setSelectedRow] = useState([]);
 
   const [model, setModel] = useState([]);
   const [valueModel, setValueModel] = useState("");
@@ -134,13 +150,31 @@ const Home = () => {
         },
       };
       let res = await enviarDatos(data);
-      console.log('---Drones', res);
       setRows(res);
     })();
   }, []);
 
+  const create = () => {
+    if (rows.length === 10) {
+      mostrarMensaje(
+        setOpenSMS,
+        "The fleet does not accept more drones",
+        5000,
+        "warning"
+      );
+    } else {
+      setOpenDialog(true);
+    }
+  };
+
+  const onRowsSelectionHandler = (ids) => {
+    const selectedRowsData = ids.map((id) => rows.find((row) => row.id === id));
+    setSelectedRow(selectedRowsData);
+  };
+
   return (
     <>
+      {openDialog && <FullScreenDialog open={open} setOpen={setOpen} title={title} actionDialog={actionDialog} />}
       <Grid
         container
         spacing={1}
@@ -206,11 +240,10 @@ const Home = () => {
                 required
                 variant="outlined"
                 fullWidth
-                label="Search drone by model"
+                label="Filter drones by model"
                 size={"small"}
-                focused
+                // focused
                 key="model-autocomplete"
-
               />
             )}
           />
@@ -238,17 +271,34 @@ const Home = () => {
                 required
                 variant="outlined"
                 fullWidth
-                label="Search drone by state"
+                label="Filter drones by state"
                 size={"small"}
-                focused
+                // focused
                 key="state-autocomplete"
-
               />
             )}
           />
         </Grid>
+        <Grid item sm={12} md={3} xl={2} lg={2}>
+          <IconButton
+            color="primary"
+            aria-label="add medication to drone"
+            onClick={() => create()}
+          >
+            <AddCircleIcon />
+          </IconButton>
+          <IconButton color="primary" aria-label="edit drone">
+            <EditIcon />
+          </IconButton>
+          <IconButton color="primary" aria-label="drone's details">
+            <VisibilityIcon />
+          </IconButton>
+          <IconButton color="primary" aria-label="delete drone">
+            <DeleteIcon />
+          </IconButton>
+        </Grid>
       </Grid>
-      <Box sx={{ height: 400, width: "100%", mt: 3 }}>
+      <Box sx={{ height: 500, width: "100%", mt: 3 }}>
         <DataGrid
           density="compact"
           localeText={esES.components.MuiDataGrid.defaultProps.localeText}
@@ -265,6 +315,7 @@ const Home = () => {
           pageSizeOptions={[25]}
           disableMultipleRowSelection={true}
           getRowHeight={() => "auto"}
+          onRowSelectionModelChange ={(ids) => onRowsSelectionHandler(ids)}
           // slots={{
           //   pagination: CustomPagination,
           // }}
@@ -279,6 +330,7 @@ const Home = () => {
           // }}
         />
       </Box>
+      <CustomizedSnackbars openSMS={openSMS} setOpenSMS={setOpenSMS} />
     </>
   );
 };
