@@ -1,3 +1,4 @@
+- el drone de cargar medicamentos no sale
 - validar si ya existe un drone con ese serial_number
 - quitar el constructor de Drone y de Medication. Para cada uno crear un objeto que es el que se pasa a la api para crearlo
 - poner LinearProgress para cuando se vaya cargando el drone. Que la barra cambie de colores.

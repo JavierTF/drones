@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `drone` (
   CONSTRAINT `FK_drone_state` FOREIGN KEY (`state`) REFERENCES `state` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='// from 0 to 10\r\nserial number (100 characters max);\r\nmodel (Lightweight, Middleweight, Cruiserweight, Heavyweight);\r\nweight limit (500gr max);\r\nbattery capacity (percentage);\r\nstate (IDLE, LOADING, LOADED, DELIVERING, DELIVERED, RETURNING).\r\n';
 
--- Volcando datos para la tabla musala.drone: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla musala.drone: ~7 rows (aproximadamente)
 DELETE FROM `drone`;
 /*!40000 ALTER TABLE `drone` DISABLE KEYS */;
 INSERT INTO `drone` (`id`, `serial_number`, `model`, `weight_limit`, `battery_capacity`, `state`) VALUES
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `drone_medication` (
   CONSTRAINT `FK_drone_medication_medication` FOREIGN KEY (`medication_id`) REFERENCES `medication` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla musala.drone_medication: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla musala.drone_medication: ~16 rows (aproximadamente)
 DELETE FROM `drone_medication`;
 /*!40000 ALTER TABLE `drone_medication` DISABLE KEYS */;
 INSERT INTO `drone_medication` (`id`, `drone_id`, `medication_id`, `timelog`) VALUES
@@ -85,15 +85,15 @@ INSERT INTO `drone_medication` (`id`, `drone_id`, `medication_id`, `timelog`) VA
 	(4, 13, 1, '2023-07-15 07:45:58'),
 	(5, 13, 2, '2023-07-15 07:45:59'),
 	(6, 13, 3, '2023-07-15 07:45:59'),
-	(7, 13, 4, '2023-07-15 07:45:59'),
-	(8, 13, 5, '2023-07-15 07:45:59'),
+	(7, 4, 4, '2023-07-15 07:45:59'),
+	(8, 1, 5, '2023-07-15 07:45:59'),
 	(9, 13, 6, '2023-07-15 07:46:00'),
-	(10, 13, 7, '2023-07-15 07:46:00'),
+	(10, 1, 7, '2023-07-15 07:46:00'),
 	(11, 13, 8, '2023-07-15 07:46:00'),
-	(12, 13, 9, '2023-07-15 07:46:00'),
+	(12, 1, 9, '2023-07-15 07:46:00'),
 	(13, 13, 10, '2023-07-15 07:46:00'),
 	(14, 15, 3, '2023-07-15 07:55:06'),
-	(15, 15, 1, '2023-07-15 07:55:06'),
+	(15, 4, 1, '2023-07-15 07:55:06'),
 	(16, 15, 2, '2023-07-15 07:55:06');
 /*!40000 ALTER TABLE `drone_medication` ENABLE KEYS */;
 

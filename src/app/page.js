@@ -23,7 +23,7 @@ import {
   Dialog,
   Stack,
   Toolbar,
-  Typography
+  Typography,
 } from "@mui/material";
 
 import {
@@ -39,7 +39,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
 
 import {
   quitarValoresCero,
@@ -114,8 +114,8 @@ const Home = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   // const [open, setOpen] = useState(true);
-  const [title, setTitle] = useState('Register drone (load medications)');
-  const [actionDialog, setActionDialog] = useState('create');
+  const [title, setTitle] = useState("Register drone (load medications)");
+  const [actionDialog, setActionDialog] = useState("create");
 
   const pathname = usePathname();
 
@@ -174,6 +174,12 @@ const Home = () => {
     }
   };
 
+  const loading = () => {
+    setActionDialog('loading');
+    setTitle('Loading a drone with medication items');
+    setOpenDialog(true);
+  };
+
   const onRowsSelectionHandler = (ids) => {
     const selectedRowsData = ids.map((id) => rows.find((row) => row.id === id));
     setSelectedRow(selectedRowsData);
@@ -182,7 +188,15 @@ const Home = () => {
   return (
     <>
       {/* sorry for the prop driling ha ha, to avoid this i could use a context  */}
-      {openDialog && <FullScreenDialog open={openDialog} setOpen={setOpenDialog} title={title} actionDialog={actionDialog} dronesList={rows} />}
+      {openDialog && (
+        <FullScreenDialog
+          open={openDialog}
+          setOpen={setOpenDialog}
+          title={title}
+          actionDialog={actionDialog}
+          dronesList={rows}
+        />
+      )}
       <Grid
         container
         spacing={1}
@@ -293,7 +307,11 @@ const Home = () => {
           >
             <AddCircleIcon />
           </IconButton>
-          <IconButton color="primary" aria-label="load medications">
+          <IconButton
+            color="primary"
+            aria-label="load medications"
+            onClick={() => loading()}
+          >
             <SystemUpdateAltIcon />
           </IconButton>
           <IconButton color="primary" aria-label="delete drone">
@@ -311,14 +329,14 @@ const Home = () => {
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 10,
+                pageSize: 25,
               },
             },
           }}
           pageSizeOptions={[25]}
           disableMultipleRowSelection={true}
           getRowHeight={() => "auto"}
-          onRowSelectionModelChange ={(ids) => onRowsSelectionHandler(ids)}
+          onRowSelectionModelChange={(ids) => onRowsSelectionHandler(ids)}
           // slots={{
           //   pagination: CustomPagination,
           // }}
