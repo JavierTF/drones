@@ -8,64 +8,64 @@ datasource db {
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model dron {
-  id                      Int               @id @default(autoincrement()) @db.UnsignedTinyInt
-  serial_number           String            @unique(map: "serial_number") @db.Char(100)
-  model                   Int               @db.TinyInt
-  weight_limit            Float             @default(0) @db.Float
-  battery_capacity        Float             @db.Float
-  state                   Boolean
-  model_dron_modelTomodel model             @relation("dron_modelTomodel", fields: [model], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_dron_model")
-  state_dron_stateTostate state             @relation("dron_stateTostate", fields: [state], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_dron_state")
-  dron_log                dron_log[]
-  dron_medication         dron_medication[]
-
-  @@index([model], map: "FK_dron_model")
-  @@index([state], map: "state")
-}
-
-model dron_log {
-  id          BigInt    @id @default(autoincrement())
-  dron_id     Int       @db.UnsignedTinyInt
-  battery_log String    @db.Char(50)
-  update      DateTime? @db.DateTime(0)
-  dron        dron      @relation(fields: [dron_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK__dron")
-
-  @@index([dron_id], map: "FK__dron")
-}
-
-model dron_medication {
-  id            Int        @id
-  dron_id       Int        @db.UnsignedTinyInt
-  medication_id Int
-  delivery      DateTime?  @db.DateTime(0)
-  dron          dron       @relation(fields: [dron_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_dron_medication_dron")
-  medication    medication @relation(fields: [medication_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_dron_medication_medication")
-
-  @@index([dron_id], map: "FK_dron_medication_dron")
-  @@index([medication_id], map: "FK_dron_medication_medication")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model medication {
-  id              Int               @id
-  name            String            @db.Char(150)
-  weight          Float             @db.Float
-  code            String            @db.Char(50)
-  image           String?           @db.VarChar(255)
-  dron_medication dron_medication[]
+  id               Int                @id
+  name             String             @db.Char(150)
+  weight           Float              @db.Float
+  code             String             @db.Char(50)
+  image            String?            @db.VarChar(255)
+  drone_medication drone_medication[]
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model model {
-  id                     Int    @id @default(autoincrement()) @db.TinyInt
-  name                   String @db.Char(15)
-  dron_dron_modelTomodel dron[] @relation("dron_modelTomodel")
+  id                       Int     @id @default(autoincrement())
+  name                     String  @db.Char(15)
+  drone_drone_modelTomodel drone[] @relation("drone_modelTomodel")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model state {
-  id                     Boolean @id
-  name                   String  @db.Char(15)
-  dron_dron_stateTostate dron[]  @relation("dron_stateTostate")
+  id                       Int     @id @default(autoincrement())
+  name                     String  @db.Char(15)
+  drone_drone_stateTostate drone[] @relation("drone_stateTostate")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model drone {
+  id                       Int                @id @default(autoincrement())
+  serial_number            String             @unique(map: "serial_number") @db.Char(100)
+  model                    Int
+  weight_limit             Float              @default(0) @db.Float
+  battery_capacity         Float              @db.Float
+  state                    Int
+  model_drone_modelTomodel model              @relation("drone_modelTomodel", fields: [model], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_dron_model")
+  state_drone_stateTostate state              @relation("drone_stateTostate", fields: [state], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_drone_state")
+  drone_log                drone_log[]
+  drone_medication         drone_medication[]
+
+  @@index([state], map: "state")
+  @@index([model], map: "FK_drone_model")
+}
+
+model drone_log {
+  id          BigInt    @id @default(autoincrement())
+  drone_id    Int
+  battery_log String    @db.Char(50)
+  update      DateTime? @db.DateTime(0)
+  drone       drone     @relation(fields: [drone_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_drone_log_drone")
+
+  @@index([drone_id], map: "FK__dron")
+}
+
+model drone_medication {
+  id            Int        @id @default(autoincrement())
+  drone_id      Int
+  medication_id Int
+  timelog       DateTime?  @db.DateTime(0)
+  drone         drone      @relation(fields: [drone_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_drone_medication_drone")
+  medication    medication @relation(fields: [medication_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_drone_medication_medication")
+
+  @@index([drone_id], map: "FK_dron_medication_dron")
+  @@index([medication_id], map: "FK_drone_medication_medication")
 }

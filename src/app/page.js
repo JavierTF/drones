@@ -39,6 +39,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 
 import {
   quitarValoresCero,
@@ -112,7 +113,7 @@ const Home = () => {
   const [openSMS, setOpenSMS] = useState({});
   const [openDialog, setOpenDialog] = useState(false);
 
-  const [open, setOpen] = useState({});
+  // const [open, setOpen] = useState(true);
   const [title, setTitle] = useState('Register drone (load medications)');
   const [actionDialog, setActionDialog] = useState('create');
 
@@ -180,7 +181,8 @@ const Home = () => {
 
   return (
     <>
-      {openDialog && <FullScreenDialog open={open} setOpen={setOpen} title={title} actionDialog={actionDialog} />}
+      {/* sorry for the prop driling ha ha, to avoid this i could use a context  */}
+      {openDialog && <FullScreenDialog open={openDialog} setOpen={setOpenDialog} title={title} actionDialog={actionDialog} dronesList={rows} />}
       <Grid
         container
         spacing={1}
@@ -190,7 +192,6 @@ const Home = () => {
       >
         <Grid item container sm={12} md={3} xl={2} lg={2}>
           <Button
-            disabled={false}
             variant={pathname === "/medication" ? "outlined" : "contained"}
             startIcon={<LocalAirportIcon />}
             color={"primary"}
@@ -200,7 +201,6 @@ const Home = () => {
             Drone
           </Button>
           <Button
-            disabled={false}
             variant={
               pathname === "/" || pathname === "/drone"
                 ? "outlined"
@@ -293,8 +293,8 @@ const Home = () => {
           >
             <AddCircleIcon />
           </IconButton>
-          <IconButton color="primary" aria-label="edit drone" disabled>
-            <EditIcon />
+          <IconButton color="primary" aria-label="load medications">
+            <SystemUpdateAltIcon />
           </IconButton>
           <IconButton color="primary" aria-label="delete drone">
             <DeleteIcon />

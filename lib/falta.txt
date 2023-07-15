@@ -1,4 +1,6 @@
+- validar si ya existe un drone con ese serial_number
 - quitar el constructor de Drone y de Medication. Para cada uno crear un objeto que es el que se pasa a la api para crearlo
+- poner LinearProgress para cuando se vaya cargando el drone. Que la barra cambie de colores.
 - Warning: Extra attributes from the server: cz-shortcut-listen
 - no pasar los test como si fuera objeto.propiedad, dejar la propiedad sola // ya el entorno de pruebas esta configurado, probarlos luego
 - actualizar los tests
@@ -7,6 +9,9 @@
 - escribir el codigo de la logica
 - crear el visual
 - como crear medication? Que Medication solo tenga un textarea y que se le pegue el objeto JSON, si es valido que borre todo y si no que muestre un alert
+
+
+
 
 Drone
     id, serial_number, model, weight_limit, battery_capacity, state
