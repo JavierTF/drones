@@ -18,6 +18,12 @@ import {
   CardContent,
   Autocomplete,
   IconButton,
+  AppBar,
+  Checkbox,
+  Dialog,
+  Stack,
+  Toolbar,
+  Typography
 } from "@mui/material";
 
 import {
@@ -287,11 +293,8 @@ const Home = () => {
           >
             <AddCircleIcon />
           </IconButton>
-          <IconButton color="primary" aria-label="edit drone">
+          <IconButton color="primary" aria-label="edit drone" disabled>
             <EditIcon />
-          </IconButton>
-          <IconButton color="primary" aria-label="drone's details">
-            <VisibilityIcon />
           </IconButton>
           <IconButton color="primary" aria-label="delete drone">
             <DeleteIcon />

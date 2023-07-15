@@ -33,11 +33,12 @@ CREATE TABLE IF NOT EXISTS `drone` (
   CONSTRAINT `FK_dron_state` FOREIGN KEY (`state`) REFERENCES `state` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='// from 0 to 10\r\nserial number (100 characters max);\r\nmodel (Lightweight, Middleweight, Cruiserweight, Heavyweight);\r\nweight limit (500gr max);\r\nbattery capacity (percentage);\r\nstate (IDLE, LOADING, LOADED, DELIVERING, DELIVERED, RETURNING).\r\n';
 
--- Volcando datos para la tabla musala.drone: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla musala.drone: ~1 rows (aproximadamente)
 DELETE FROM `drone`;
 /*!40000 ALTER TABLE `drone` DISABLE KEYS */;
 INSERT INTO `drone` (`id`, `serial_number`, `model`, `weight_limit`, `battery_capacity`, `state`) VALUES
-	(1, 'sdfs-456', 1, 140, 80, 1);
+	(1, 'sdfs-456', 1, 140, 80, 1),
+	(2, 'ert_ert', 4, 500, 20, 6);
 /*!40000 ALTER TABLE `drone` ENABLE KEYS */;
 
 -- Volcando estructura para tabla musala.drone_log
