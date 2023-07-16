@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { usePathname } from "next/navigation";
 
 import CustomizedSnackbars from "./Snackbar";
@@ -120,6 +120,9 @@ const Home = () => {
   const [title, setTitle] = useState("Register drone (load medications)");
   const [actionDialog, setActionDialog] = useState("create");
 
+  const [time, setTime] = useState();
+  const [delay, setDelay] = useState();
+
   const pathname = usePathname();
 
   const [allRows, setAllRows] = useState([]);
@@ -141,6 +144,34 @@ const Home = () => {
       let res = await enviarDatos(data);
       setAllRows(res);
       setRows(res);
+    })();
+
+    (async () => {
+      let data = {
+        table: "getDrones",
+        action: "raw",
+        datos: {
+          model_id: null,
+          state_id: null,
+        },
+      };
+      let res = await enviarDatos(data);
+      setAllRows(res);
+      setRows(res);
+    })();
+
+    (async () => {
+      let data = {
+        table: "getTimeToLog",
+        action: "raw",
+      };
+      let res = await enviarDatos(data);
+
+      let interval = setInterval(() => {
+        droneLog
+      }, delay);
+
+      setTime(interval);
     })();
   }, []);
 
@@ -178,8 +209,38 @@ const Home = () => {
 
   const handleChangeAvailable = () => {
     setAvailable(() => !available);
-    available ? setRows(rows.filter(el => el.battery_capacity >= 25 && (el.state === 'IDLE' || el.state === 'LOADING'))) : setRows(allRows);
-  }
+    available
+      ? setRows(
+          rows.filter(
+            (el) =>
+              el.battery_capacity >= 25 &&
+              (el.state === "IDLE" || el.state === "LOADING")
+          )
+        )
+      : setRows(allRows);
+  };
+
+  // const recursive = (delay) => {
+  //   setTimeout(recursive, delay);
+  //   let intervalID = clearInterval(intervalID);
+  // };
+
+  // un minuto son 60000 milisegundos por tanto minutos * 60000 da intervalo de tiempo
+
+  const droneLog = async () => {
+    for (let elem of allRows) {
+      let data = {
+        table: "drone_log",
+        action: "create",
+        datos: {
+          drone_id: elem.id,
+          battery_log: elem.battery_capacity,
+          update: new Date(),
+        },
+      };
+      await enviarDatos(data);
+    }
+  };
 
   return (
     <>
@@ -223,6 +284,21 @@ const Home = () => {
             Medication
           </Button>
         </Grid>
+        {/* <Grid
+          item
+          container
+          alignItems="center"
+          justifyContent="center"
+          direction="column"
+          sm={12}
+          md={3}
+          xl={8}
+          lg={8}
+        >
+          <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+            {`Last drone log ${time}`}
+          </Typography>
+        </Grid> */}
       </Grid>
       <Grid
         container

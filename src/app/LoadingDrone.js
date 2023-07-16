@@ -226,11 +226,11 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
         </Stack>
         <Stack direction={"row"} sx={{ mt: "20px", mx: "auto" }} spacing={3}>
           <Autocomplete
+            readOnly={actionDialog === "checking"}
             disabled={
               !valueDrone ||
               typeof valueDrone === "null" ||
-              valueDrone.battery_capacity < 25 ||
-              actionDialog === "checking"
+              valueDrone.battery_capacity < 25
                 ? true
                 : false
             }
@@ -273,8 +273,8 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
         </Stack>
       </Box>
       <Grid container justifyContent="flex-end" sx={{ mx: 7, mb: 2 }}>
-        <Button
-          disabled={v.length == 0 || actionDialog === "checking"}
+        {actionDialog !== "checking" && <Button
+          disabled={v.length == 0}
           variant="contained"
           color={"primary"}
           component="label"
@@ -282,7 +282,7 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
           onClick={() => loadMedications()}
         >
           Save
-        </Button>
+        </Button>}
       </Grid>
       <CustomizedSnackbars openSMS={openSMS} setOpenSMS={setOpenSMS} />
     </>

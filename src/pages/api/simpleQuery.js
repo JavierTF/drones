@@ -148,6 +148,17 @@ const Handle = async (req, res) => {
             typeof value === "bigint" ? value.toString() : value
           )
         );
+      } else if (currentData.table === "getTimeToLog") {
+        result =
+          await prisma.$queryRaw`SELECT c.value
+          FROM config c
+          WHERE c.key = 'time_to_log';`;
+
+        result = JSON.parse(
+          JSON.stringify(result, (key, value) =>
+            typeof value === "bigint" ? value.toString() : value
+          )
+        );
       } else {
         result = await prisma.$queryRaw`${currentData.datos.consulta}`;
 
