@@ -160,19 +160,20 @@ const Home = () => {
       setRows(res);
     })();
 
-    (async () => {
-      let data = {
-        table: "getTimeToLog",
-        action: "raw",
-      };
-      let res = await enviarDatos(data);
+    // (async () => {
+    //   let data = {
+    //     table: "getTimeToLog",
+    //     action: "raw",
+    //   };
+    //   let delay = await enviarDatos(data);
+    //   console.log('DELAY', delay);
 
-      let interval = setInterval(() => {
-        droneLog
-      }, delay);
+    //   setInterval(() => {
+    //     droneLog();
+    //   }, delay);
 
-      setTime(interval);
-    })();
+    //   setTime(delay);
+    // })();
   }, []);
 
   const create = () => {
@@ -220,25 +221,24 @@ const Home = () => {
       : setRows(allRows);
   };
 
-  // const recursive = (delay) => {
-  //   setTimeout(recursive, delay);
-  //   let intervalID = clearInterval(intervalID);
-  // };
-
   // un minuto son 60000 milisegundos por tanto minutos * 60000 da intervalo de tiempo
 
   const droneLog = async () => {
-    for (let elem of allRows) {
-      let data = {
-        table: "drone_log",
-        action: "create",
-        datos: {
-          drone_id: elem.id,
-          battery_log: elem.battery_capacity,
-          update: new Date(),
-        },
-      };
-      await enviarDatos(data);
+    console.log("TIME", time);
+    if (time) {
+      for (let elem of allRows) {
+        let data = {
+          table: "drone_log",
+          action: "create",
+          datos: {
+            drone_id: elem.id,
+            battery_log: elem.battery_capacity,
+            update: new Date(),
+          },
+        };
+        let res = await enviarDatos(data);
+        console.log("RESRES", res);
+      }
     }
   };
 
@@ -308,21 +308,17 @@ const Home = () => {
         justifyContent="center"
       >
         <Grid item sm={12} md={9} xl={3} lg={3}>
-          <Grid item>
-            <Grid container sx={{ mt: 1 }} direction={"row"}>
-              <Checkbox
-                id="available"
-                name={"checking-available-drones-for-loading"}
-                checked={!available}
-                onChange={handleChangeAvailable}
-                sx={{ width: "100px", justifyContent: "left" }}
-              />
-              <Typography
-                sx={{ width: "800px", mt: 1, justifyContent: "left" }}
-              >
-                Checking available drones for loading
-              </Typography>
-            </Grid>
+          <Grid container direction="row" alignItems="center">
+            <Checkbox
+              id="available"
+              name="checking-available-drones-for-loading"
+              checked={!available}
+              onChange={handleChangeAvailable}
+              sx={{ justifyContent: "flex-start" }}
+            />
+            <Typography>
+              Checking available drones for loading
+            </Typography>
           </Grid>
         </Grid>
         <Grid item sm={12} md={3} xl={2} lg={2}>

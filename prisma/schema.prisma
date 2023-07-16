@@ -51,7 +51,7 @@ model drone {
 model drone_log {
   id          BigInt    @id @default(autoincrement())
   drone_id    Int
-  battery_log String    @db.Char(50)
+  battery_log Int
   update      DateTime? @db.DateTime(0)
   drone       drone     @relation(fields: [drone_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_drone_log_drone")
 
@@ -68,4 +68,11 @@ model drone_medication {
 
   @@index([drone_id], map: "FK_dron_medication_dron")
   @@index([medication_id], map: "FK_drone_medication_medication")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model config {
+  id    Int    @id @default(autoincrement())
+  key   String @db.Char(50)
+  value String @db.Char(50)
 }

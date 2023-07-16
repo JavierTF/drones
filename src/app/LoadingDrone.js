@@ -20,7 +20,7 @@ import {
   Stack,
   Toolbar,
   Typography,
-  Tooltip
+  Tooltip,
 } from "@mui/material";
 
 import {
@@ -136,19 +136,47 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
     if (!med?.message) {
       setV(med);
     }
+    return med;
   };
 
-  const calculateProgress = () => {
+  const addWeights = (updatedV) => {
+    if (updatedV.length === 0) return 0;
     let suma = 0;
-    suma = v.map((el) => (suma += parseFloat(el.weight)));
-    let val =
-      v.length === 0 ? 0.05 : suma / parseFloat(valueDrone.weight_limit);
-    console.log("VALOR", val);
-    setProgress(val * 100);
-    if (val >= 0.8) setColorProgress("error");
-    if (val >= 0.5 && val < 0.8) setColorProgress("warning");
-    if (val >= 0.2 && val < 0.5) setColorProgress("secondary");
-    if (val >= 0 && val < 0.2) setColorProgress("success");
+    for (let elem of updatedV) {
+      console.log("PESO", elem.weight);
+      suma += parseFloat(elem.weight);
+      console.log("SUMA IN FOR", suma);
+    }
+    return suma;
+  };
+
+  const totalWeight = (suma) => {
+    return v.length === 0
+      ? 0.05
+      : suma / parseFloat(valueDrone.weight_limit);
+  };
+
+  const calculateProgress = (updatedV) => {
+    try {
+      let suma = addWeights(updatedV);
+      console.log("SUMA", suma);
+      let total = totalWeight(updatedV, suma);
+      console.log("totalWeight", total);
+      setProgress(total * 100);
+      if (total >= 0.8){
+        setColorProgress("error")
+      } else if (total >= 0.5 && total < 0.8){
+        setColorProgress("warning");
+      } else if (total >= 0.2 && total < 0.5){
+        setColorProgress("secondary");
+      } else if (total >= 0 && total < 0.2){
+        setColorProgress("success")
+      } else {
+        throw new Error("Invalid total value");
+      }
+    } catch (error) {
+      console.log("An error ocurred", error.message);
+    }
   };
 
   const showBatteryCapacity = () => {
@@ -158,7 +186,7 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
       5000,
       valueDrone.battery_capacity < 25 ? "warning" : "info"
     );
-  }
+  };
 
   return (
     <>
@@ -183,14 +211,20 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
                     sx={{ mr: 2, mt: 1 }}
                     onClick={() => showBatteryCapacity()}
                   >
-                    {valueDrone.battery_capacity < 25 ? (<BatteryAlertIcon />) : (<BatterySaverIcon />)}
+                    {valueDrone.battery_capacity < 25 ? (
+                      <BatteryAlertIcon />
+                    ) : (
+                      <BatterySaverIcon />
+                    )}
                   </IconButton>
                 </Tooltip>
               )}
               <Autocomplete
                 value={valueDrone || null}
                 onChange={async (_event, newValue2) => {
-                  await load(newValue2);
+                  let med = await load(newValue2);
+                  console.log("MED", med);
+                  calculateProgress(med);
                 }}
                 inputValue={inputValueDrone}
                 onInputChange={(_event, newInputValue2) => {
@@ -237,13 +271,16 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
             multiple
             value={v}
             onChange={(event, newValue) => {
-              calculateProgress();
-              setV([
-                ...fixedOptions,
-                ...newValue.filter(
-                  (option) => fixedOptions.indexOf(option) === -1
-                ),
-              ]);
+              setV((prevV) => {
+                const updatedV = [
+                  ...fixedOptions,
+                  ...newValue.filter(
+                    (option) => fixedOptions.indexOf(option) === -1
+                  ),
+                ];
+                calculateProgress(updatedV); // Pasar el valor actualizado a calculateProgress
+                return updatedV;
+              });
             }}
             id="medication"
             options={medication}
@@ -273,16 +310,18 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
         </Stack>
       </Box>
       <Grid container justifyContent="flex-end" sx={{ mx: 7, mb: 2 }}>
-        {actionDialog !== "checking" && <Button
-          disabled={v.length == 0}
-          variant="contained"
-          color={"primary"}
-          component="label"
-          sx={{ mb: 1 }}
-          onClick={() => loadMedications()}
-        >
-          Save
-        </Button>}
+        {actionDialog !== "checking" && (
+          <Button
+            disabled={v.length == 0}
+            variant="contained"
+            color={"primary"}
+            component="label"
+            sx={{ mb: 1 }}
+            onClick={() => loadMedications()}
+          >
+            Save
+          </Button>
+        )}
       </Grid>
       <CustomizedSnackbars openSMS={openSMS} setOpenSMS={setOpenSMS} />
     </>
