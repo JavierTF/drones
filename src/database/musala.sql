@@ -63,18 +63,20 @@ INSERT INTO `drone` (`id`, `serial_number`, `model`, `weight_limit`, `battery_ca
 
 -- Volcando estructura para tabla musala.drone_log
 CREATE TABLE IF NOT EXISTS `drone_log` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `drone_id` int(10) NOT NULL,
   `battery_log` int(11) NOT NULL,
   `update` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK__dron` (`drone_id`) USING BTREE,
   CONSTRAINT `FK_drone_log_drone` FOREIGN KEY (`drone_id`) REFERENCES `drone` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla musala.drone_log: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla musala.drone_log: ~1 rows (aproximadamente)
 DELETE FROM `drone_log`;
 /*!40000 ALTER TABLE `drone_log` DISABLE KEYS */;
+INSERT INTO `drone_log` (`id`, `drone_id`, `battery_log`, `update`) VALUES
+	(1, 3, 45, '2023-07-16 08:49:11');
 /*!40000 ALTER TABLE `drone_log` ENABLE KEYS */;
 
 -- Volcando estructura para tabla musala.drone_medication

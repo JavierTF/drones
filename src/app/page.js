@@ -122,6 +122,7 @@ const Home = () => {
 
   const [time, setTime] = useState();
   const [delay, setDelay] = useState();
+  const [interval, setInterval] = useState();
 
   const pathname = usePathname();
 
@@ -159,22 +160,32 @@ const Home = () => {
       setAllRows(res);
       setRows(res);
     })();
-
-    // (async () => {
-    //   let data = {
-    //     table: "getTimeToLog",
-    //     action: "raw",
-    //   };
-    //   let delay = await enviarDatos(data);
-    //   console.log('DELAY', delay);
-
-    //   setInterval(() => {
-    //     droneLog();
-    //   }, delay);
-
-    //   setTime(delay);
-    // })();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let data = {
+        table: "getTimeToLog",
+        action: "raw",
+      };
+  
+      let delay = await enviarDatos(data);
+      delay = parseInt(delay[0].value);
+      console.log('DELAY', delay);
+      
+      const intervalID = setInterval(() => {
+        droneLog();
+      }, delay);
+  
+      setTime(delay);
+  
+      return () => {
+        clearInterval(intervalID); // Limpia el intervalo cuando el componente se desmonte
+      };
+    };
+  
+    fetchData();
+  }, [interval]);
 
   const create = () => {
     if (rows.length === 10) {

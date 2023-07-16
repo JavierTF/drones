@@ -48,6 +48,8 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
 
   const [medication, setMedication] = useState([]);
 
+  const [tooHeavy, setTooHeavy] = useState(false);
+
   const fixedOptions = [];
   const [v, setV] = React.useState([...fixedOptions]);
 
@@ -162,17 +164,28 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
       console.log("SUMA", suma);
       let total = totalWeight(updatedV, suma);
       console.log("totalWeight", total);
-      setProgress(total * 100);
-      if (total >= 0.8){
-        setColorProgress("error")
-      } else if (total >= 0.5 && total < 0.8){
-        setColorProgress("warning");
-      } else if (total >= 0.2 && total < 0.5){
-        setColorProgress("secondary");
-      } else if (total >= 0 && total < 0.2){
-        setColorProgress("success")
+      if (total <= 1){
+        setTooHeavy(false);
+        setProgress(total * 100);
+        if (total >= 0.8){
+          setColorProgress("error")
+        } else if (total >= 0.5 && total < 0.8){
+          setColorProgress("warning");
+        } else if (total >= 0.2 && total < 0.5){
+          setColorProgress("secondary");
+        } else if (total >= 0 && total < 0.2){
+          setColorProgress("success")
+        } else {
+          throw new Error("Invalid total value");
+        }
       } else {
-        throw new Error("Invalid total value");
+        setTooHeavy(true);
+        mostrarMensaje(
+          setOpenSMS,
+          "The load is too heavy for this drone",
+          5000,
+          "error"
+        );
       }
     } catch (error) {
       console.log("An error ocurred", error.message);
@@ -290,6 +303,7 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
               <TextField
                 {...params}
                 label="Select medication(s)"
+                error={tooHeavy}
                 variant="standard"
                 sx={{ width: "550px" }}
               />
@@ -312,7 +326,7 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
       <Grid container justifyContent="flex-end" sx={{ mx: 7, mb: 2 }}>
         {actionDialog !== "checking" && (
           <Button
-            disabled={v.length == 0}
+            disabled={v.length == 0 || tooHeavy}
             variant="contained"
             color={"primary"}
             component="label"
