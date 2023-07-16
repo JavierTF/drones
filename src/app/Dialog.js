@@ -24,6 +24,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import AddDrone from './AddDrone';
 import LoadingDrone from "./LoadingDrone";
+import AddMedication from "./AddMedication";
 
 export default function FullScreenDialog({ open, setOpen, title, actionDialog, dronesList }) {
   const handleClose = () => {
@@ -32,7 +33,7 @@ export default function FullScreenDialog({ open, setOpen, title, actionDialog, d
 
   return (
     <div>
-      <Dialog maxWidth={actionDialog === 'create' ? 'lg' : 'sm'} open={open} onClose={handleClose} sx={{ height: "auto", padding: 4, overflow: "auto" }}>
+      <Dialog maxWidth={(actionDialog === 'create' || actionDialog === 'addMedication') ? 'lg' : 'sm'} open={open} onClose={handleClose} sx={{ height: "auto", padding: 4, overflow: "auto" }}>
         <AppBar sx={{ position: "relative" }}>
           <Toolbar>
             <IconButton
@@ -52,6 +53,7 @@ export default function FullScreenDialog({ open, setOpen, title, actionDialog, d
           <Grid container spacing={2}>
             {actionDialog === 'create' && <AddDrone dronesList={dronesList} />}
             {(actionDialog === 'loading' || actionDialog === 'checking') && <LoadingDrone dronesList={dronesList} actionDialog={actionDialog} />}
+            {actionDialog === 'addMedication' && <AddMedication />}
           </Grid>
         </Grid>
       </Dialog>

@@ -33,7 +33,7 @@ import {
   GridActionsCellItem,
 } from "@mui/x-data-grid";
 
-import LocalAirportIcon from "@mui/icons-material/LocalAirport";
+import AppsIcon from "@mui/icons-material/Apps";
 import MedicationIcon from "@mui/icons-material/Medication";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
@@ -168,22 +168,22 @@ const Home = () => {
         table: "getTimeToLog",
         action: "raw",
       };
-  
+
       let delay = await enviarDatos(data);
       delay = parseInt(delay[0].value);
-      console.log('DELAY', delay);
-      
+      console.log("DELAY", delay);
+
       const intervalID = setInterval(() => {
         droneLog();
       }, delay);
-  
+
       setTime(delay);
-  
+
       return () => {
         clearInterval(intervalID); // Limpia el intervalo cuando el componente se desmonte
       };
     };
-  
+
     fetchData();
   }, [interval]);
 
@@ -211,6 +211,14 @@ const Home = () => {
     // i used the same component that loads medicines, I just put the button and the autocomplete disable el.state != "IDLE" || el.state == "DELIVERED" || el.state == "RETURNING"
     setActionDialog("checking");
     setTitle("Checking loaded medication items for a given drone");
+    setOpenDialog(true);
+  };
+
+  const addMedication = () => {
+    // we can check this in the list
+    // i used the same component that loads medicines, I just put the button and the autocomplete disable el.state != "IDLE" || el.state == "DELIVERED" || el.state == "RETURNING"
+    setActionDialog("addMedication");
+    setTitle("Adding medications JSON input");
     setOpenDialog(true);
   };
 
@@ -248,7 +256,6 @@ const Home = () => {
           },
         };
         let res = await enviarDatos(data);
-        console.log("RESRES", res);
       }
     }
   };
@@ -274,25 +281,13 @@ const Home = () => {
       >
         <Grid item container sm={12} md={3} xl={2} lg={2}>
           <Button
-            variant={pathname === "/medication" ? "outlined" : "contained"}
-            startIcon={<LocalAirportIcon />}
+            variant={"contained"}
+            startIcon={<AppsIcon />}
             color={"primary"}
             component="label"
             sx={{ mb: 1 }}
           >
-            Drone
-          </Button>
-          <Button
-            variant={
-              pathname === "/" || pathname === "/drone"
-                ? "outlined"
-                : "contained"
-            }
-            startIcon={<MedicationIcon />}
-            color={"primary"}
-            component="label"
-          >
-            Medication
+            Load data
           </Button>
         </Grid>
         {/* <Grid
@@ -327,9 +322,7 @@ const Home = () => {
               onChange={handleChangeAvailable}
               sx={{ justifyContent: "flex-start" }}
             />
-            <Typography>
-              Checking available drones for loading
-            </Typography>
+            <Typography>Checking available drones for loading</Typography>
           </Grid>
         </Grid>
         <Grid item sm={12} md={3} xl={2} lg={2}>
@@ -354,8 +347,12 @@ const Home = () => {
           >
             <VisibilityIcon />
           </IconButton>
-          <IconButton color="primary" aria-label="delete drone">
-            <DeleteIcon />
+          <IconButton
+            color="primary"
+            aria-label="add medications"
+            onClick={() => addMedication()}
+          >
+            <MedicationIcon />
           </IconButton>
         </Grid>
       </Grid>
@@ -377,18 +374,6 @@ const Home = () => {
           disableMultipleRowSelection={true}
           getRowHeight={() => "auto"}
           onRowSelectionModelChange={(ids) => onRowsSelectionHandler(ids)}
-          // slots={{
-          //   pagination: CustomPagination,
-          // }}
-          // editMode={enTiempo && puedeEditar && "row"}
-          // rowModesModel={rowModesModel}
-          // onRowModesModelChange={handleRowModesModelChange}
-          // onRowEditStart={handleRowEditStart}
-          // onRowEditStop={handleRowEditStop}
-          // processRowUpdate={item?.id == norma?.id && processRowUpdate}
-          // slotProps={{
-          //   toolbar: { setRows, setRowModesModel },
-          // }}
         />
       </Box>
       <CustomizedSnackbars openSMS={openSMS} setOpenSMS={setOpenSMS} />

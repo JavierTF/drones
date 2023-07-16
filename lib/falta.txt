@@ -1,6 +1,7 @@
 - Load medications
 - Prevent the drone from being loaded with more weight that it can carry;
-- Introduce a periodic task to check drones battery levels and create history/audit event log for this.
+- Introduce a periodic task to check drones battery levels and create history/audit event log for this. (Solo falta que lo haga periodicamente)
+- cargar base de datos
 - validar correctamente el peso de los medicamentos VS peso limite
 - Warning: Extra attributes from the server: cz-shortcut-listen
 - no pasar los test como si fuera objeto.propiedad, dejar la propiedad sola // ya el entorno de pruebas esta configurado, probarlos luego
