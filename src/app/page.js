@@ -88,6 +88,9 @@ const columns = [
     width: 140,
     editable: false,
     sortable: false,
+    valueGetter: (params) => {
+      return `${params.value}%`;
+    },
   },
   {
     field: "state",
@@ -119,34 +122,13 @@ const Home = () => {
 
   const pathname = usePathname();
 
+  const [allRows, setAllRows] = useState([]);
   const [rows, setRows] = useState([]);
   const [selectedRow, setSelectedRow] = useState([]);
 
-  const [model, setModel] = useState([]);
-  const [valueModel, setValueModel] = useState("");
-  const [inputValueModel, setInputValueModel] = useState("");
-
-  const [state, setState] = useState([]);
-  const [valueState, setValueState] = useState("");
-  const [inputValueState, setInputValueState] = useState("");
+  const [available, setAvailable] = useState();
 
   useEffect(() => {
-    (async () => {
-      let data = {
-        table: "model",
-        action: "findMany",
-      };
-      let res = await enviarDatos(data);
-      setModel(res);
-    })();
-    (async () => {
-      let data = {
-        table: "state",
-        action: "findMany",
-      };
-      let res = await enviarDatos(data);
-      setState(res);
-    })();
     (async () => {
       let data = {
         table: "getDrones",
@@ -157,6 +139,7 @@ const Home = () => {
         },
       };
       let res = await enviarDatos(data);
+      setAllRows(res);
       setRows(res);
     })();
   }, []);
@@ -175,8 +158,16 @@ const Home = () => {
   };
 
   const loading = () => {
-    setActionDialog('loading');
-    setTitle('Loading a drone with medication items');
+    setActionDialog("loading");
+    setTitle("Loading a drone with medication items");
+    setOpenDialog(true);
+  };
+
+  const checking = () => {
+    // we can check this in the list
+    // i used the same component that loads medicines, I just put the button and the autocomplete disable el.state != "IDLE" || el.state == "DELIVERED" || el.state == "RETURNING"
+    setActionDialog("checking");
+    setTitle("Checking loaded medication items for a given drone");
     setOpenDialog(true);
   };
 
@@ -184,6 +175,11 @@ const Home = () => {
     const selectedRowsData = ids.map((id) => rows.find((row) => row.id === id));
     setSelectedRow(selectedRowsData);
   };
+
+  const handleChangeAvailable = () => {
+    setAvailable(() => !available);
+    available ? setRows(rows.filter(el => el.battery_capacity >= 25 && (el.state === 'IDLE' || el.state === 'LOADING'))) : setRows(allRows);
+  }
 
   return (
     <>
@@ -236,68 +232,22 @@ const Home = () => {
         justifyContent="center"
       >
         <Grid item sm={12} md={9} xl={3} lg={3}>
-          <Autocomplete
-            fullWidth
-            value={valueModel || null}
-            onChange={(_event, newValue2) => {
-              setValueModel(newValue2);
-            }}
-            inputValue={inputValueModel}
-            onInputChange={(_event, newInputValue2) => {
-              setInputValueModel(newInputValue2);
-            }}
-            id="model"
-            options={model}
-            autoHighlight
-            getOptionLabel={
-              (option) => `${option.name}` // ${option.version} / ${option.anno}
-            }
-            style={{ height: 40 }}
-            size={"small"}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                required
-                variant="outlined"
-                fullWidth
-                label="Filter drones by model"
-                size={"small"}
-                // focused
-                key="model-autocomplete"
+          <Grid item>
+            <Grid container sx={{ mt: 1 }} direction={"row"}>
+              <Checkbox
+                id="available"
+                name={"checking-available-drones-for-loading"}
+                checked={!available}
+                onChange={handleChangeAvailable}
+                sx={{ width: "100px", justifyContent: "left" }}
               />
-            )}
-          />
-        </Grid>
-        <Grid item sm={12} md={9} xl={3} lg={3}>
-          <Autocomplete
-            fullWidth
-            value={valueState || null}
-            onChange={(_event, newValue2) => {
-              setValueState(newValue2);
-            }}
-            inputValue={inputValueState}
-            onInputChange={(_event, newInputValue2) => {
-              setInputValueState(newInputValue2);
-            }}
-            id="state"
-            options={state}
-            autoHighlight
-            getOptionLabel={(option) => `${option.name}`}
-            style={{ height: 40 }}
-            size={"small"}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                required
-                variant="outlined"
-                fullWidth
-                label="Filter drones by state"
-                size={"small"}
-                // focused
-                key="state-autocomplete"
-              />
-            )}
-          />
+              <Typography
+                sx={{ width: "800px", mt: 1, justifyContent: "left" }}
+              >
+                Checking available drones for loading
+              </Typography>
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item sm={12} md={3} xl={2} lg={2}>
           <IconButton
@@ -313,6 +263,13 @@ const Home = () => {
             onClick={() => loading()}
           >
             <SystemUpdateAltIcon />
+          </IconButton>
+          <IconButton
+            color="primary"
+            aria-label="checking medications"
+            onClick={() => checking()}
+          >
+            <VisibilityIcon />
           </IconButton>
           <IconButton color="primary" aria-label="delete drone">
             <DeleteIcon />

@@ -1,14 +1,12 @@
-- el drone de cargar medicamentos no sale
-- validar si ya existe un drone con ese serial_number
-- quitar el constructor de Drone y de Medication. Para cada uno crear un objeto que es el que se pasa a la api para crearlo
-- poner LinearProgress para cuando se vaya cargando el drone. Que la barra cambie de colores.
+- checking available drones for loading;
+- Prevent the drone from being loaded with more weight that it can carry;
+- Introduce a periodic task to check drones battery levels and create history/audit event log for this.
+- validar correctamente el peso de los medicamentos VS peso limite
 - Warning: Extra attributes from the server: cz-shortcut-listen
 - no pasar los test como si fuera objeto.propiedad, dejar la propiedad sola // ya el entorno de pruebas esta configurado, probarlos luego
 - actualizar los tests
 - describir en los tests qué debe devolver cada función y también que si no pasa me devuelva un Throw
 - poner algunas funciones importantes
-- escribir el codigo de la logica
-- crear el visual
 - como crear medication? Que Medication solo tenga un textarea y que se le pegue el objeto JSON, si es valido que borre todo y si no que muestre un alert
 
 

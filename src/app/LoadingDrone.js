@@ -20,6 +20,7 @@ import {
   Stack,
   Toolbar,
   Typography,
+  Tooltip
 } from "@mui/material";
 
 import {
@@ -34,8 +35,9 @@ import {
 } from "../../lib/utiles";
 
 import BatteryAlertIcon from "@mui/icons-material/BatteryAlert";
+import BatterySaverIcon from "@mui/icons-material/BatterySaver";
 
-export default function LoadingDrone({ dronesList }) {
+export default function LoadingDrone({ dronesList, actionDialog }) {
   const [openSMS, setOpenSMS] = useState({});
   const [progress, setProgress] = useState(1);
   const [colorProgress, setColorProgress] = useState("success");
@@ -50,9 +52,19 @@ export default function LoadingDrone({ dronesList }) {
   const [v, setV] = React.useState([...fixedOptions]);
 
   useEffect(() => {
-    let res = dronesList.filter(
-      (el) => el.state == "IDLE" || el.state == "LOADING"
-    );
+    let res;
+    if (actionDialog === "loading") {
+      res = dronesList.filter(
+        (el) => el.state == "IDLE" || el.state == "LOADING"
+      );
+    } else {
+      res = dronesList.filter(
+        (el) =>
+          el.state != "IDLE" ||
+          el.state == "DELIVERED" ||
+          el.state == "RETURNING"
+      );
+    }
     setDrone(res);
     (async () => {
       let data = {
@@ -66,12 +78,9 @@ export default function LoadingDrone({ dronesList }) {
 
   const loadMedications = async () => {
     try {
-      if (typeof valueDrone !== 'null' && valueDrone){
+      if (typeof valueDrone !== "null" && valueDrone) {
         let idsMedications = v.map((el) => el.id);
-        // let res = response[0];
-        console.log("RES", valueDrone);
-        console.log("res.battery_capacity", valueDrone.battery_capacity);
-        if (valueDrone.battery_capacity < 25){
+        if (valueDrone.battery_capacity < 25) {
           mostrarMensaje(
             setOpenSMS,
             "Can't load medications. Please, recharge this drone",
@@ -106,7 +115,6 @@ export default function LoadingDrone({ dronesList }) {
             "success"
           );
         }
-        
       } else {
         mostrarMensaje(setOpenSMS, "An error ocurred", 5000, "error");
       }
@@ -125,10 +133,10 @@ export default function LoadingDrone({ dronesList }) {
       },
     };
     const med = await enviarDatos(data);
-    if (!med?.message){
+    if (!med?.message) {
       setV(med);
     }
-  }
+  };
 
   const calculateProgress = () => {
     let suma = 0;
@@ -142,6 +150,15 @@ export default function LoadingDrone({ dronesList }) {
     if (val >= 0.2 && val < 0.5) setColorProgress("secondary");
     if (val >= 0 && val < 0.2) setColorProgress("success");
   };
+
+  const showBatteryCapacity = () => {
+    mostrarMensaje(
+      setOpenSMS,
+      `Battery on ${valueDrone.battery_capacity}%`,
+      5000,
+      valueDrone.battery_capacity < 25 ? "warning" : "info"
+    );
+  }
 
   return (
     <>
@@ -157,13 +174,18 @@ export default function LoadingDrone({ dronesList }) {
                   <BatteryAlertIcon />
                 </IconButton>
               ) : (
-                <IconButton
-                  color={valueDrone.battery_capacity < 25 ? "error" : "success"}
-                  aria-label="delete drone"
-                  sx={{ mr: 2, mt: 1 }}
-                >
-                  <BatteryAlertIcon />
-                </IconButton>
+                <Tooltip title={`Battery on ${valueDrone.battery_capacity}%`}>
+                  <IconButton
+                    color={
+                      valueDrone.battery_capacity < 25 ? "error" : "success"
+                    }
+                    aria-label="delete drone"
+                    sx={{ mr: 2, mt: 1 }}
+                    onClick={() => showBatteryCapacity()}
+                  >
+                    {valueDrone.battery_capacity < 25 ? (<BatteryAlertIcon />) : (<BatterySaverIcon />)}
+                  </IconButton>
+                </Tooltip>
               )}
               <Autocomplete
                 value={valueDrone || null}
@@ -207,7 +229,8 @@ export default function LoadingDrone({ dronesList }) {
             disabled={
               !valueDrone ||
               typeof valueDrone === "null" ||
-              valueDrone.battery_capacity < 25
+              valueDrone.battery_capacity < 25 ||
+              actionDialog === "checking"
                 ? true
                 : false
             }
@@ -251,7 +274,7 @@ export default function LoadingDrone({ dronesList }) {
       </Box>
       <Grid container justifyContent="flex-end" sx={{ mx: 7, mb: 2 }}>
         <Button
-          disabled={v.length == 0}
+          disabled={v.length == 0 || actionDialog === "checking"}
           variant="contained"
           color={"primary"}
           component="label"

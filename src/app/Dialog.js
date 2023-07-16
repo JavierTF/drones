@@ -32,7 +32,7 @@ export default function FullScreenDialog({ open, setOpen, title, actionDialog, d
 
   return (
     <div>
-      <Dialog maxWidth={actionDialog === 'create' ? 'lg' : 'sm'} open={open} onClose={handleClose}>
+      <Dialog maxWidth={actionDialog === 'create' ? 'lg' : 'sm'} open={open} onClose={handleClose} sx={{ height: "auto", padding: 4, overflow: "auto" }}>
         <AppBar sx={{ position: "relative" }}>
           <Toolbar>
             <IconButton
@@ -51,7 +51,7 @@ export default function FullScreenDialog({ open, setOpen, title, actionDialog, d
         <Grid item sm={12}>
           <Grid container spacing={2}>
             {actionDialog === 'create' && <AddDrone dronesList={dronesList} />}
-            {actionDialog === 'loading' && <LoadingDrone dronesList={dronesList} />}
+            {(actionDialog === 'loading' || actionDialog === 'checking') && <LoadingDrone dronesList={dronesList} actionDialog={actionDialog} />}
           </Grid>
         </Grid>
       </Dialog>
