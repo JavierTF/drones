@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { usePathname } from "next/navigation";
 
+import Link from "next/link";
+
 import CustomizedSnackbars from "./Snackbar";
 import FullScreenDialog from "./Dialog";
 
@@ -36,7 +38,7 @@ import {
 import AppsIcon from "@mui/icons-material/Apps";
 import MedicationIcon from "@mui/icons-material/Medication";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import EditIcon from "@mui/icons-material/Edit";
+import FileOpenIcon from "@mui/icons-material/FileOpen";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
@@ -196,6 +198,8 @@ const Home = () => {
         "warning"
       );
     } else {
+      setActionDialog("create");
+      setTitle("Registering a drone");
       setOpenDialog(true);
     }
   };
@@ -289,6 +293,24 @@ const Home = () => {
           >
             Load data
           </Button>
+          <Link
+            href={"/Revision-manual.pdf"}
+            target="_blank"
+            style={{
+              textDecoration: "none",
+              color: "green",
+            }}
+          >
+            <Button
+              variant={"outlined"}
+              startIcon={<FileOpenIcon />}
+              color={"primary"}
+              component="label"
+              sx={{ mb: 1 }}
+            >
+              Revision´s manual
+            </Button>
+          </Link>
         </Grid>
         {/* <Grid
           item
