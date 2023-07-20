@@ -1,3 +1,5 @@
+'use client'
+
 const { PrismaClient } = require("@prisma/client");
 const fs = require("fs");
 

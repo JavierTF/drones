@@ -8,6 +8,8 @@ import Link from "next/link";
 import CustomizedSnackbars from "./Snackbar";
 import FullScreenDialog from "./Dialog";
 
+// import main from "../database/seed"
+
 import {
   Backdrop,
   Box,
@@ -26,6 +28,7 @@ import {
   Stack,
   Toolbar,
   Typography,
+  Tooltip,
 } from "@mui/material";
 
 import {
@@ -39,9 +42,12 @@ import AppsIcon from "@mui/icons-material/Apps";
 import MedicationIcon from "@mui/icons-material/Medication";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
+import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 
 import {
   quitarValoresCero,
@@ -123,10 +129,8 @@ const Home = () => {
   const [actionDialog, setActionDialog] = useState("create");
 
   const [time, setTime] = useState();
-  const [delay, setDelay] = useState();
-  const [interval, setInterval] = useState();
-
-  const pathname = usePathname();
+  const [showTime, setShowTime] = useState();
+  const [stop, setStop] = useState(true);
 
   const [allRows, setAllRows] = useState([]);
   const [rows, setRows] = useState([]);
@@ -162,32 +166,58 @@ const Home = () => {
       setAllRows(res);
       setRows(res);
     })();
+
+    (async () => {
+      setInterval(async () => {
+        await localTime();
+      }, 5000);
+    })();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const localTime = async () => {
+    // console.log("llegue", stop);
+    if (stop){
+      if (localStorage.getItem("save-logs") == null) {
+        localStorage.setItem("save-logs", Date.now());
+      } else {
+        let t = localStorage.getItem("save-logs");
+        let res = Date.now() - t;
+        let seconds = Math.floor(res / 1000);
+        let data = {
+          table: "getTimeToLog",
+          action: "raw",
+        };
+  
+        let delay = await enviarDatos(data);
+        delay = parseInt(delay[0].value);
+        console.log("seconds", seconds);
+        console.log("DElAY", delay / 1000);
+        setShowTime((delay / 1000) - seconds);
+        if (seconds >= delay / 1000) {
+          await droneLog();
+          localStorage.setItem("save-logs", Date.now());
+        }
+      }
+      setTimeout(localTime, 5000);
+    }    
+  };
+
+  // un minuto son 60000 milisegundos por tanto minutos * 60000 da intervalo de tiempo
+  const droneLog = async () => {
+    mostrarMensaje(setOpenSMS, "Saving logs", 5000, "info");
+    for (let elem of allRows) {
       let data = {
-        table: "getTimeToLog",
-        action: "raw",
+        table: "drone_log",
+        action: "create",
+        datos: {
+          drone_id: elem.id,
+          battery_log: elem.battery_capacity,
+          update: new Date(),
+        },
       };
-
-      let delay = await enviarDatos(data);
-      delay = parseInt(delay[0].value);
-      console.log("DELAY", delay);
-
-      const intervalID = setInterval(() => {
-        droneLog();
-      }, delay);
-
-      setTime(delay);
-
-      return () => {
-        clearInterval(intervalID); // Limpia el intervalo cuando el componente se desmonte
-      };
-    };
-
-    fetchData();
-  }, [interval]);
+      await enviarDatos(data);
+    }
+  };
 
   const create = () => {
     if (rows.length === 10) {
@@ -244,25 +274,38 @@ const Home = () => {
       : setRows(allRows);
   };
 
-  // un minuto son 60000 milisegundos por tanto minutos * 60000 da intervalo de tiempo
+  const handleChangeTime = (e) => {
+    setTime(e.target.value);
+  };
 
-  const droneLog = async () => {
-    console.log("TIME", time);
+  const updateTimeLog = async () => {
+    console.log("TIME updateTimeLog", time);
     if (time) {
-      for (let elem of allRows) {
-        let data = {
-          table: "drone_log",
-          action: "create",
-          datos: {
-            drone_id: elem.id,
-            battery_log: elem.battery_capacity,
-            update: new Date(),
-          },
-        };
-        let res = await enviarDatos(data);
+      let data = {
+        table: "updateTimeToLog",
+        action: "raw",
+        datos: {
+          miliseconds: parseInt(time * 1000),
+        },
+      };
+
+      let res = await enviarDatos(data);
+      if (!res?.message) {
+        mostrarMensaje(
+          setOpenSMS,
+          `Frecuency updated to ${time} minutes`,
+          5000,
+          "success"
+        );
       }
+    } else {
+      mostrarMensaje(setOpenSMS, "Select frecuency, please", 5000, "error");
     }
   };
+
+  // const handleClickStop = () = {
+  //   (stop) ? setStop(false) : setStop(true);
+  // }
 
   return (
     <>
@@ -290,6 +333,7 @@ const Home = () => {
             color={"primary"}
             component="label"
             sx={{ mb: 1 }}
+            // onClick={() => main()}
           >
             Load data
           </Button>
@@ -312,21 +356,62 @@ const Home = () => {
             </Button>
           </Link>
         </Grid>
-        {/* <Grid
+        <Grid
           item
           container
           alignItems="center"
           justifyContent="center"
-          direction="column"
+          direction="row"
+          spacing={1}
           sm={12}
-          md={3}
+          md={6}
           xl={8}
           lg={8}
         >
-          <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-            {`Last drone log ${time}`}
-          </Typography>
-        </Grid> */}
+          <Grid item>
+            <TextField
+              id="frecuency-drone-log"
+              label="Frecuency drones log"
+              value={time}
+              helperText={"Value in minutes"}
+              onChange={handleChangeTime}
+              size="small"
+              color="primary"
+              type="number"
+              InputProps={{
+                inputProps: {
+                  max: 0,
+                  min: 180000,
+                },
+              }}
+            />
+          </Grid>
+          <Grid item>
+            <Button
+              variant={"contained"}
+              startIcon={<AccessTimeIcon />}
+              onClick={updateTimeLog}
+              color={"primary"}
+              component="label"
+              sx={{ mb: 3 }}
+            >
+              set time
+            </Button>
+            <Tooltip title={!stop ? "Play logs" : "Pause logs"}>
+              <IconButton
+                color="primary"
+                aria-label="pause-play"
+                onClick={() => setStop(stop => !stop)}
+                sx={{ ml: 1, mb: 3 }}
+              >
+                {!stop ? (<PlayCircleOutlineIcon />) : (<PauseCircleOutlineIcon />)}
+              </IconButton>
+            </Tooltip>
+          </Grid>
+          <Grid item>
+            {showTime && <Typography sx={{ mb: 2.5 }}>{`${showTime} segs`}</Typography>}
+          </Grid>
+        </Grid>
       </Grid>
       <Grid
         container
@@ -348,34 +433,42 @@ const Home = () => {
           </Grid>
         </Grid>
         <Grid item sm={12} md={3} xl={2} lg={2}>
-          <IconButton
-            color="primary"
-            aria-label="add medication to drone"
-            onClick={() => create()}
-          >
-            <AddCircleIcon />
-          </IconButton>
-          <IconButton
-            color="primary"
-            aria-label="load medications"
-            onClick={() => loading()}
-          >
-            <SystemUpdateAltIcon />
-          </IconButton>
-          <IconButton
-            color="primary"
-            aria-label="checking medications"
-            onClick={() => checking()}
-          >
-            <VisibilityIcon />
-          </IconButton>
-          <IconButton
-            color="primary"
-            aria-label="add medications"
-            onClick={() => addMedication()}
-          >
-            <MedicationIcon />
-          </IconButton>
+          <Tooltip title={"Registering a drone"}>
+            <IconButton
+              color="primary"
+              aria-label="add medication to drone"
+              onClick={() => create()}
+            >
+              <AddCircleIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={"Loading a drone"}>
+            <IconButton
+              color="primary"
+              aria-label="load medications"
+              onClick={() => loading()}
+            >
+              <SystemUpdateAltIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={"Checking loaded"}>
+            <IconButton
+              color="primary"
+              aria-label="checking medications"
+              onClick={() => checking()}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={"Add medication"}>
+            <IconButton
+              color="primary"
+              aria-label="add medications"
+              onClick={() => addMedication()}
+            >
+              <MedicationIcon />
+            </IconButton>
+          </Tooltip>
         </Grid>
       </Grid>
       <Box sx={{ height: 500, width: "100%", mt: 3 }}>

@@ -46,9 +46,9 @@ CREATE TABLE IF NOT EXISTS `drone` (
   KEY `FK_drone_model` (`model`),
   CONSTRAINT `FK_drone_model` FOREIGN KEY (`model`) REFERENCES `model` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_drone_state` FOREIGN KEY (`state`) REFERENCES `state` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='// from 0 to 10\r\nserial number (100 characters max);\r\nmodel (Lightweight, Middleweight, Cruiserweight, Heavyweight);\r\nweight limit (500gr max);\r\nbattery capacity (percentage);\r\nstate (IDLE, LOADING, LOADED, DELIVERING, DELIVERED, RETURNING).\r\n';
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='// from 0 to 10\r\nserial number (100 characters max);\r\nmodel (Lightweight, Middleweight, Cruiserweight, Heavyweight);\r\nweight limit (500gr max);\r\nbattery capacity (percentage);\r\nstate (IDLE, LOADING, LOADED, DELIVERING, DELIVERED, RETURNING).\r\n';
 
--- Volcando datos para la tabla musala.drone: ~7 rows (aproximadamente)
+-- Volcando datos para la tabla musala.drone: ~8 rows (aproximadamente)
 DELETE FROM `drone`;
 /*!40000 ALTER TABLE `drone` DISABLE KEYS */;
 INSERT INTO `drone` (`id`, `serial_number`, `model`, `weight_limit`, `battery_capacity`, `state`) VALUES
@@ -58,7 +58,8 @@ INSERT INTO `drone` (`id`, `serial_number`, `model`, `weight_limit`, `battery_ca
 	(4, 'cgfg3', 2, 345, 33, 2),
 	(7, 'cgfg8', 3, 240, 50, 3),
 	(13, 'fghf', 2, 500, 98, 6),
-	(15, 'fghfu7', 2, 500, 98, 6);
+	(15, 'fghfu7', 2, 500, 98, 6),
+	(16, 'd-45a', 4, 500, 50, 6);
 /*!40000 ALTER TABLE `drone` ENABLE KEYS */;
 
 -- Volcando estructura para tabla musala.drone_log
@@ -70,9 +71,9 @@ CREATE TABLE IF NOT EXISTS `drone_log` (
   PRIMARY KEY (`id`),
   KEY `FK__dron` (`drone_id`) USING BTREE,
   CONSTRAINT `FK_drone_log_drone` FOREIGN KEY (`drone_id`) REFERENCES `drone` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=491 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=554 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla musala.drone_log: ~462 rows (aproximadamente)
+-- Volcando datos para la tabla musala.drone_log: ~553 rows (aproximadamente)
 DELETE FROM `drone_log`;
 /*!40000 ALTER TABLE `drone_log` DISABLE KEYS */;
 INSERT INTO `drone_log` (`id`, `drone_id`, `battery_log`, `update`) VALUES
@@ -565,7 +566,70 @@ INSERT INTO `drone_log` (`id`, `drone_id`, `battery_log`, `update`) VALUES
 	(487, 2, 20, '2023-07-16 10:00:17'),
 	(488, 13, 98, '2023-07-16 10:00:18'),
 	(489, 15, 98, '2023-07-16 10:00:18'),
-	(490, 1, 10, '2023-07-16 10:00:18');
+	(490, 1, 10, '2023-07-16 10:00:18'),
+	(491, 3, 45, '2023-07-16 20:05:13'),
+	(492, 4, 33, '2023-07-16 20:05:14'),
+	(493, 7, 50, '2023-07-16 20:05:14'),
+	(494, 2, 20, '2023-07-16 20:05:14'),
+	(495, 13, 98, '2023-07-16 20:05:14'),
+	(496, 15, 98, '2023-07-16 20:05:14'),
+	(497, 1, 10, '2023-07-16 20:05:14'),
+	(498, 3, 45, '2023-07-16 20:31:41'),
+	(499, 4, 33, '2023-07-16 20:31:42'),
+	(500, 7, 50, '2023-07-16 20:31:42'),
+	(501, 2, 20, '2023-07-16 20:31:42'),
+	(502, 13, 98, '2023-07-16 20:31:42'),
+	(503, 15, 98, '2023-07-16 20:31:42'),
+	(504, 1, 10, '2023-07-16 20:31:42'),
+	(505, 3, 45, '2023-07-16 20:47:25'),
+	(506, 4, 33, '2023-07-16 20:47:26'),
+	(507, 7, 50, '2023-07-16 20:47:27'),
+	(508, 2, 20, '2023-07-16 20:47:27'),
+	(509, 13, 98, '2023-07-16 20:47:27'),
+	(510, 15, 98, '2023-07-16 20:47:27'),
+	(511, 1, 10, '2023-07-16 20:47:27'),
+	(512, 3, 45, '2023-07-16 20:47:27'),
+	(513, 4, 33, '2023-07-16 20:47:28'),
+	(514, 7, 50, '2023-07-16 20:47:28'),
+	(515, 2, 20, '2023-07-16 20:47:28'),
+	(516, 13, 98, '2023-07-16 20:47:28'),
+	(517, 15, 98, '2023-07-16 20:47:28'),
+	(518, 1, 10, '2023-07-16 20:47:28'),
+	(519, 3, 45, '2023-07-16 20:47:57'),
+	(520, 4, 33, '2023-07-16 20:47:58'),
+	(521, 3, 45, '2023-07-16 20:47:58'),
+	(522, 4, 33, '2023-07-16 20:47:58'),
+	(523, 7, 50, '2023-07-16 20:47:58'),
+	(524, 7, 50, '2023-07-16 20:47:58'),
+	(525, 3, 45, '2023-07-16 20:47:58'),
+	(526, 2, 20, '2023-07-16 20:47:58'),
+	(527, 2, 20, '2023-07-16 20:47:58'),
+	(528, 4, 33, '2023-07-16 20:47:58'),
+	(529, 13, 98, '2023-07-16 20:47:58'),
+	(530, 7, 50, '2023-07-16 20:47:58'),
+	(531, 13, 98, '2023-07-16 20:47:58'),
+	(532, 15, 98, '2023-07-16 20:47:58'),
+	(533, 2, 20, '2023-07-16 20:47:58'),
+	(534, 1, 10, '2023-07-16 20:47:58'),
+	(535, 15, 98, '2023-07-16 20:47:58'),
+	(536, 1, 10, '2023-07-16 20:47:58'),
+	(537, 13, 98, '2023-07-16 20:47:58'),
+	(538, 15, 98, '2023-07-16 20:47:59'),
+	(539, 1, 10, '2023-07-16 20:47:59'),
+	(540, 3, 45, '2023-07-16 20:48:06'),
+	(541, 4, 33, '2023-07-16 20:48:06'),
+	(542, 7, 50, '2023-07-16 20:48:06'),
+	(543, 2, 20, '2023-07-16 20:48:07'),
+	(544, 13, 98, '2023-07-16 20:48:07'),
+	(545, 15, 98, '2023-07-16 20:48:07'),
+	(546, 1, 10, '2023-07-16 20:48:07'),
+	(547, 3, 45, '2023-07-16 21:15:48'),
+	(548, 4, 33, '2023-07-16 21:15:48'),
+	(549, 7, 50, '2023-07-16 21:15:48'),
+	(550, 2, 20, '2023-07-16 21:15:48'),
+	(551, 13, 98, '2023-07-16 21:15:49'),
+	(552, 15, 98, '2023-07-16 21:15:49'),
+	(553, 1, 10, '2023-07-16 21:15:49');
 /*!40000 ALTER TABLE `drone_log` ENABLE KEYS */;
 
 -- Volcando estructura para tabla musala.drone_medication
@@ -581,7 +645,7 @@ CREATE TABLE IF NOT EXISTS `drone_medication` (
   CONSTRAINT `FK_drone_medication_medication` FOREIGN KEY (`medication_id`) REFERENCES `medication` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla musala.drone_medication: ~10 rows (aproximadamente)
+-- Volcando datos para la tabla musala.drone_medication: ~12 rows (aproximadamente)
 DELETE FROM `drone_medication`;
 /*!40000 ALTER TABLE `drone_medication` DISABLE KEYS */;
 INSERT INTO `drone_medication` (`id`, `drone_id`, `medication_id`, `timelog`) VALUES
@@ -601,15 +665,16 @@ INSERT INTO `drone_medication` (`id`, `drone_id`, `medication_id`, `timelog`) VA
 
 -- Volcando estructura para tabla musala.medication
 CREATE TABLE IF NOT EXISTS `medication` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` char(150) NOT NULL COMMENT 'allowed only letters, numbers, ‘-‘, ‘_’',
   `weight` float NOT NULL,
   `code` char(50) NOT NULL COMMENT 'allowed only upper case letters, underscore and numbers',
   `image` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla musala.medication: ~10 rows (aproximadamente)
+-- Volcando datos para la tabla musala.medication: ~13 rows (aproximadamente)
 DELETE FROM `medication`;
 /*!40000 ALTER TABLE `medication` DISABLE KEYS */;
 INSERT INTO `medication` (`id`, `name`, `weight`, `code`, `image`) VALUES
@@ -622,7 +687,10 @@ INSERT INTO `medication` (`id`, `name`, `weight`, `code`, `image`) VALUES
 	(7, 'Xadago', 94, 'xa344', NULL),
 	(8, 'Xigduo', 320, 'df', NULL),
 	(9, 'Oxibato de sodio', 80, 'sds', NULL),
-	(10, 'Abraxane', 210, 'df', NULL);
+	(10, 'Abraxane', 210, 'df', NULL),
+	(11, 'Elemento-1', 1.5, 'A', NULL),
+	(12, 'Elemento_2', 2.7, 'B', NULL),
+	(13, 'Elemento-_3', 0.8, 'C', NULL);
 /*!40000 ALTER TABLE `medication` ENABLE KEYS */;
 
 -- Volcando estructura para tabla musala.model

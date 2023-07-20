@@ -9,8 +9,8 @@ datasource db {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model medication {
-  id               Int                @id
-  name             String             @db.Char(150)
+  id               Int                @id @default(autoincrement())
+  name             String             @unique(map: "name") @db.Char(150)
   weight           Float              @db.Float
   code             String             @db.Char(50)
   image            String?            @db.VarChar(255)

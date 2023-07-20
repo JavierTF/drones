@@ -30,8 +30,7 @@ import {
   enviarDatos,
   buscarUltimo,
   mostrarMensaje,
-  validateSerialNumber,
-  validateRange,
+  validateString,
 } from "../../lib/utiles";
 
 export default function AddMedication() {
@@ -41,33 +40,72 @@ export default function AddMedication() {
 
   const handleChangeMedication = async (e) => {
     setMedication(e.target.value);
-    if (e.target.value) {
-      try {
-        let j = JSON.parse(e.target.value);
-        console.log("JSON.parse", j);
-        mostrarMensaje(setOpenSMS, "Is valid", 5000, "info");
-      } catch (error) {
-        console.log("An error ocurred", error.message);
-        mostrarMensaje(setOpenSMS, "Invalid JSON format", 5000, "error");
-      }
-    }
   };
 
   const createMedication = async () => {
-    for (let elem of medication){
-      let data = {
-        table: "medication",
-        action: "create",
-        datos: {
-          name: elem.name,
-          weight: elem.weight,
-          code: elem.code,
-          image: elem.image,
-        },
-      };
-      await enviarDatos(data);
+    if (medication) {
+      try {
+        let j = JSON.parse(medication);
+        console.log("JJJ", j);
+        if (Array.isArray(j)) {
+          let valid = true;
+          for (let elem of j) {
+            if (!validateString(elem.name.toString(), /^[a-zA-Z0-9\-_]+$/)) {
+              mostrarMensaje(
+                setOpenSMS,
+                `Invalid medication's name ${elem.name}, just letters, numbers, hyphens, and underscores`,
+                5000,
+                "error"
+              );
+              valid = false;
+              break;
+            }
+
+            if (!validateString(elem.code.toString(), /^[A-Z0-9_]+$/)) {
+              mostrarMensaje(
+                setOpenSMS,
+                `Invalid medication's code ${elem.code}, just uppercase letters, numbers, and underscores`,
+                5000,
+                "error"
+              );
+              valid = false;
+              break;
+            }
+          }
+
+          if (valid) {
+            for (let elem of j) {
+              console.log('IMAGEN', elem.image);
+              let data = {
+                table: "medication",
+                action: "create",
+                datos: {
+                  name: elem.name,
+                  weight: elem.weight,
+                  code: elem.code,
+                  image: elem.image,
+                },
+              };
+              await enviarDatos(data);
+            }
+            mostrarMensaje(setOpenSMS, "Medication saved in database", 5000, "success");
+          }
+        } else {
+          mostrarMensaje(
+            setOpenSMS,
+            "Invalid JSON format, should be an array",
+            5000,
+            "error"
+          );
+        }
+      } catch (error) {
+        if (error.name === 'TypeError'){
+          mostrarMensaje(setOpenSMS, "Invalid JSON format", 5000, "error");
+        }
+        console.log("An error occurred", error.message);
+      }
     }
-  }
+  };
 
   return (
     <>

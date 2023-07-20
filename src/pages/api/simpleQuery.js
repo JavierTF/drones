@@ -159,6 +159,18 @@ const Handle = async (req, res) => {
             typeof value === "bigint" ? value.toString() : value
           )
         );
+      } else if (currentData.table === "updateTimeToLog") {
+        console.log('--->ASDASD', currentData.datos.miliseconds);
+        result =
+          await prisma.$queryRaw`UPDATE config
+          SET value = ${currentData.datos.miliseconds}
+          WHERE key = 'time_to_log';`;
+
+        result = JSON.parse(
+          JSON.stringify(result, (key, value) =>
+            typeof value === "bigint" ? value.toString() : value
+          )
+        );
       } else {
         result = await prisma.$queryRaw`${currentData.datos.consulta}`;
 

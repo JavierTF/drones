@@ -1,9 +1,7 @@
 ### Prioridad:
 
-- Insert medications from JSON meterlo dentro de un try para ahi mismo validar
-- Prevent the drone from being loaded with more weight that it can carry; (Revisar)
-- Introduce a periodic task to check drones battery levels and create history/audit event log for this. (Solo falta que lo haga periodicamente)
 - cargar base de datos
+- que se pueda detener o volver a iniciar el log
 
 ### Importante:
 
@@ -16,7 +14,7 @@
 
 ### Cosmética:
 
-- annadir tooltip a los botones
+- que se muestren los campos con errores
 
 / ------------------------------------------------- /
 

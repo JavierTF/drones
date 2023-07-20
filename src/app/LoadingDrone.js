@@ -152,40 +152,43 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
     return suma;
   };
 
-  const totalWeight = (suma) => {
-    return v.length === 0
+  const totalWeight = (updatedV, suma) => {
+    return updatedV.length === 0
       ? 0.05
       : suma / parseFloat(valueDrone.weight_limit);
   };
 
   const calculateProgress = (updatedV) => {
     try {
-      let suma = addWeights(updatedV);
-      console.log("SUMA", suma);
-      let total = totalWeight(updatedV, suma);
-      console.log("totalWeight", total);
-      if (total <= 1){
-        setTooHeavy(false);
-        setProgress(total * 100);
-        if (total >= 0.8){
-          setColorProgress("error")
-        } else if (total >= 0.5 && total < 0.8){
-          setColorProgress("warning");
-        } else if (total >= 0.2 && total < 0.5){
-          setColorProgress("secondary");
-        } else if (total >= 0 && total < 0.2){
-          setColorProgress("success")
+      let suma = 0;
+      if (updatedV.length !== 0) {
+        suma = addWeights(updatedV);
+        console.log("SUMA", suma);
+        let total = totalWeight(updatedV, suma);
+        console.log("totalWeight", total);
+        if (total <= 1) {
+          setTooHeavy(false);
+          setProgress(total * 100);
+          if (total >= 0.7 && total < 0.8) {
+            setColorProgress("warning");
+          } else if (total >= 0.3 && total < 0.7) {
+            setColorProgress("secondary");
+          } else if (total >= 0 && total < 0.3) {
+            setColorProgress("success");
+          } else {
+            throw new Error("Invalid total value");
+          }
         } else {
-          throw new Error("Invalid total value");
+          setTooHeavy(true);
+          setProgress(total * 100);
+          setColorProgress("error");
+          mostrarMensaje(
+            setOpenSMS,
+            "The load is too heavy for this drone",
+            5000,
+            "error"
+          );
         }
-      } else {
-        setTooHeavy(true);
-        mostrarMensaje(
-          setOpenSMS,
-          "The load is too heavy for this drone",
-          5000,
-          "error"
-        );
       }
     } catch (error) {
       console.log("An error ocurred", error.message);
