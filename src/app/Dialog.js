@@ -2,21 +2,10 @@
 
 import * as React from "react";
 import {
-  Backdrop,
-  Box,
-  Button,
   Grid,
-  CircularProgress,
-  LinearProgress,
-  TextField,
-  Card,
-  CardContent,
-  Autocomplete,
   IconButton,
   AppBar,
-  Checkbox,
   Dialog,
-  Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -28,7 +17,7 @@ import AddMedication from "./AddMedication";
 
 export default function FullScreenDialog({ open, setOpen, title, actionDialog, dronesList }) {
   const handleClose = () => {
-    setOpen(false);
+    window.location.reload();
   };
 
   return (

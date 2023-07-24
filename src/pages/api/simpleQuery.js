@@ -88,7 +88,6 @@ const Handle = async (req, res) => {
           LEFT JOIN medication m ON dm.medication_id = m.id
           LEFT JOIN state s ON s.id = d.state
           LEFT JOIN model modelo ON modelo.id = d.model
-          WHERE ${currentData.datos.model_id} IS NULL OR modelo.id = ${currentData.datos.model_id}
           GROUP BY d.serial_number, d.id, modelo.name, d.weight_limit, d.battery_capacity, s.name;`;
 
         result = JSON.parse(
@@ -150,7 +149,7 @@ const Handle = async (req, res) => {
         );
       } else if (currentData.table === "getTimeToLog") {
         result =
-          await prisma.$queryRaw`SELECT c.value
+          await prisma.$queryRaw`SELECT c.id, c.value
           FROM config c
           WHERE c.key = 'time_to_log';`;
 
@@ -162,9 +161,10 @@ const Handle = async (req, res) => {
       } else if (currentData.table === "updateTimeToLog") {
         console.log('--->ASDASD', currentData.datos.miliseconds);
         result =
-          await prisma.$queryRaw`UPDATE config
+          await prisma.$queryRaw`
+          UPDATE config
           SET value = ${currentData.datos.miliseconds}
-          WHERE key = 'time_to_log';`;
+          WHERE id = ${currentData.datos.id};`;
 
         result = JSON.parse(
           JSON.stringify(result, (key, value) =>

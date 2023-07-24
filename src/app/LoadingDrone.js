@@ -1,37 +1,27 @@
 "use client";
 
+// the error property in the form fields could be better validated
+
 import React, { useState, useEffect } from "react";
 import CustomizedSnackbars from "./Snackbar";
 
 import {
-  Backdrop,
   Box,
   Button,
   Grid,
   CircularProgress,
   TextField,
-  Card,
-  CardContent,
   Autocomplete,
   IconButton,
-  AppBar,
-  Checkbox,
-  Dialog,
   Stack,
-  Toolbar,
-  Typography,
   Tooltip,
+  
 } from "@mui/material";
 
 import {
-  quitarValoresCero,
-  numRom,
-  extension,
   enviarDatos,
-  buscarUltimo,
   mostrarMensaje,
-  validateSerialNumber,
-  validateRange,
+  addWeights,
 } from "../../lib/utiles";
 
 import BatteryAlertIcon from "@mui/icons-material/BatteryAlert";
@@ -141,17 +131,6 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
     return med;
   };
 
-  const addWeights = (updatedV) => {
-    if (updatedV.length === 0) return 0;
-    let suma = 0;
-    for (let elem of updatedV) {
-      console.log("PESO", elem.weight);
-      suma += parseFloat(elem.weight);
-      console.log("SUMA IN FOR", suma);
-    }
-    return suma;
-  };
-
   const totalWeight = (updatedV, suma) => {
     return updatedV.length === 0
       ? 0.05
@@ -163,9 +142,7 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
       let suma = 0;
       if (updatedV.length !== 0) {
         suma = addWeights(updatedV);
-        console.log("SUMA", suma);
         let total = totalWeight(updatedV, suma);
-        console.log("totalWeight", total);
         if (total <= 1) {
           setTooHeavy(false);
           setProgress(total * 100);
@@ -239,7 +216,6 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
                 value={valueDrone || null}
                 onChange={async (_event, newValue2) => {
                   let med = await load(newValue2);
-                  console.log("MED", med);
                   calculateProgress(med);
                 }}
                 inputValue={inputValueDrone}
@@ -311,18 +287,6 @@ export default function LoadingDrone({ dronesList, actionDialog }) {
                 sx={{ width: "550px" }}
               />
             )}
-            // renderOption={(v, option) => {
-            //   return (
-            //     <li {...v} key={option}>
-            //       {option}
-            //     </li>
-            //   );
-            // }}
-            // renderTags={(name, getTagProps) => {
-            //   return name.map((option, index) => (
-            //     <Chip {...getTagProps({ index })} key={option} label={option} />
-            //   ));
-            // }}
           />
         </Stack>
       </Box>

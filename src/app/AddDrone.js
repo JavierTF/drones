@@ -4,37 +4,22 @@ import React, { useState, useEffect } from "react";
 import CustomizedSnackbars from "./Snackbar";
 
 import {
-  Backdrop,
   Box,
   Button,
   Grid,
-  CircularProgress,
-  LinearProgress,
   TextField,
-  Card,
-  CardContent,
   Autocomplete,
-  IconButton,
-  AppBar,
-  Checkbox,
-  Dialog,
   Stack,
-  Toolbar,
-  Typography,
 } from "@mui/material";
 
 import {
-  quitarValoresCero,
-  numRom,
-  extension,
   enviarDatos,
-  buscarUltimo,
   mostrarMensaje,
   validateSerialNumber,
   validateRange,
 } from "../../lib/utiles";
 
-function Drone(serial_number, model, weight_limit, battery_capacity, state) {
+export function Drone(serial_number, model, weight_limit, battery_capacity, state) {
   this.serial_number = serial_number;
   this.model = setM(model);
   this.weight_limit = weight_limit;
@@ -74,16 +59,8 @@ function Drone(serial_number, model, weight_limit, battery_capacity, state) {
   }
 }
 
-function Medication(name, weight, code, image) {
-  this.name = name;
-  this.weight = weight;
-  this.code = code;
-  this.image = image;
-}
-
 export default function AddDrone({ dronesList }) {
   const [openSMS, setOpenSMS] = useState({});
-  const [object, setObject] = useState();
 
   const [serialNumber, setSerialNumber] = useState("");
   const [weightLimit, setWeightLimit] = useState("");
@@ -99,10 +76,6 @@ export default function AddDrone({ dronesList }) {
 
   const [medication, setMedication] = useState([]);
 
-  const [serials, setSerials] = useState([]);
-  //   const [valueMedication, setValueMedication] = useState("");
-  //   const [inputValueMedication, setInputValueMedication] = useState("");
-
   const fixedOptions = [];
   const [v, setV] = React.useState([...fixedOptions]);
 
@@ -115,6 +88,7 @@ export default function AddDrone({ dronesList }) {
       let res = await enviarDatos(data);
       setModel(res);
     })();
+
     (async () => {
       let data = {
         table: "state",
@@ -123,6 +97,7 @@ export default function AddDrone({ dronesList }) {
       let res = await enviarDatos(data);
       setState(res);
     })();
+
     (async () => {
       let data = {
         table: "medication",
@@ -153,7 +128,7 @@ export default function AddDrone({ dronesList }) {
       !batteryCapacity ||
       !valueState
     ) {
-      mostrarMensaje(setOpenSMS, "Complete all required fields", 5000, "error");
+      mostrarMensaje(setOpenSMS, "Complete required fields", 5000, "error");
     } else {
       const serials = dronesList.map((el) => el.serial_number);
       if (!validateSerialNumber(serialNumber, serials))
@@ -218,28 +193,30 @@ export default function AddDrone({ dronesList }) {
           datos: { ...obj },
         };
         let res = await enviarDatos(data);
-        if (res && !res?.message) {
-          let idsMedications = v.map((el) => el.id);
-          for (let elem of idsMedications) {
-            let data = {
-              table: "drone_medication",
-              action: "create",
-              datos: { 
-                drone_id: res.id,
-                medication_id: parseInt(elem),
-                timelog: new Date()
-              },
-            };
-            let sended = await enviarDatos(data);
-            mostrarMensaje(
-              setOpenSMS,
-              `Drone ${sended[0].serial_number} created successfully`,
-              5000,
-              "error"
-            );
+        console.log("RES DRONE", res);
+        if (res?.id) {
+          if (v.length > 0) {
+            let idsMedications = v.map((el) => el.id);
+            for (let elem of idsMedications) {
+              let data = {
+                table: "drone_medication",
+                action: "create",
+                datos: {
+                  drone_id: res.id,
+                  medication_id: parseInt(elem),
+                  timelog: new Date(),
+                },
+              };
+              let sended = await enviarDatos(data);              
+            }
           }
+          mostrarMensaje(
+            setOpenSMS,
+            `Drone ${sended[0].serial_number} created successfully`,
+            5000,
+            "error"
+          );
         }
-        
       }
     }
   };
@@ -256,6 +233,7 @@ export default function AddDrone({ dronesList }) {
             required
             variant="standard"
             sx={{ width: "730px" }}
+            error={serialNumber == ""}
           />
           <Autocomplete
             fullWidth
@@ -270,9 +248,7 @@ export default function AddDrone({ dronesList }) {
             id="model"
             options={model}
             autoHighlight
-            getOptionLabel={
-              (option) => `${option.name}` // ${option.version} / ${option.anno}
-            }
+            getOptionLabel={(option) => `${option.name}`}
             style={{ height: 40 }}
             size={"small"}
             renderInput={(params) => (
@@ -283,8 +259,8 @@ export default function AddDrone({ dronesList }) {
                 fullWidth
                 label="Select model"
                 size={"small"}
-                // focused
                 key="model-autocomplete"
+                error={inputValueModel == ""}
               />
             )}
           />
@@ -312,8 +288,8 @@ export default function AddDrone({ dronesList }) {
                 fullWidth
                 label="Select state"
                 size={"small"}
-                // focused
                 key="state-autocomplete"
+                error={inputValueState == ""}
               />
             )}
           />
@@ -334,6 +310,7 @@ export default function AddDrone({ dronesList }) {
                 min: 500,
               },
             }}
+            error={weightLimit == "" || weightLimit == 0}
           />
           <TextField
             id="battery-capacity"
@@ -350,6 +327,7 @@ export default function AddDrone({ dronesList }) {
                 min: 100,
               },
             }}
+            error={batteryCapacity == "" || batteryCapacity == 0}
           />
           <Autocomplete
             multiple
@@ -373,18 +351,6 @@ export default function AddDrone({ dronesList }) {
                 variant="standard"
               />
             )}
-            // renderOption={(v, option) => {
-            //   return (
-            //     <li {...v} key={option}>
-            //       {option}
-            //     </li>
-            //   );
-            // }}
-            // renderTags={(name, getTagProps) => {
-            //   return name.map((option, index) => (
-            //     <Chip {...getTagProps({ index })} key={option} label={option} />
-            //   ));
-            // }}
           />
         </Stack>
       </Box>

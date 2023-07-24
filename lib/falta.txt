@@ -1,7 +1,12 @@
 ### Prioridad:
 
+- el log de los drones no me sale uno solo, sino que me sale 25 veces
+- Jest
+- React Testing Library
+- Limpiar código
+- Cambiar frecuencia setTimeout ?
 - cargar base de datos
-- que se pueda detener o volver a iniciar el log
+
 
 ### Importante:
 
@@ -9,12 +14,8 @@
 - describir en los tests qué debe devolver cada función y también que si no pasa me devuelva un Throw
 - no pasar los test como si fuera objeto.propiedad, dejar la propiedad sola // ya el entorno de pruebas esta configurado, probarlos luego
 - que al insertar limpie los datos y actualice la tabla, o que cuando se cierre la app se actualice la pagina
-- que se rerenderice la lista al hacer algún cambio
+- que la tabla se rerenderice la lista al hacer algún cambio (Front)
 - Warning: Extra attributes from the server: cz-shortcut-listen
-
-### Cosmética:
-
-- que se muestren los campos con errores
 
 / ------------------------------------------------- /
 

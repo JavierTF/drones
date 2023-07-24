@@ -1,13 +1,13 @@
 const { PrismaClient } = require("@prisma/client");
-import fs from 'fs';
-import path from 'path';
+const fs = require("fs");
+var path = require("path");
 
 const prisma = new PrismaClient();
 
-async function Seed() {
+async function seed() {
   console.log("CURRENT", __dirname);
   console.log("Iniciando...");
-  const sql = fs.readFileSync(path.join(__dirname, "../database/musala.sql"), "utf8");
+  const sql = fs.readFileSync(path.join(__dirname, + "/api/musala.sql"), "utf8");
   console.log('SQL_TEXT', sql);
 
   let res = await prisma.$queryRaw(sql);
@@ -21,4 +21,4 @@ async function Seed() {
   }
 }
 
-export default Seed;
+export default seed;
