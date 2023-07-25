@@ -1,52 +1,72 @@
 import Home from "./Home";
+import Waiting from "./Waiting";
 import fs from "fs";
-import prisma from '../../lib/prisma'
+import mysql from "mysql2";
 
 async function Servidor() {
-  let sql;
+  let executed = false;
 
-  const leer = (filePath) => {
-    return new Promise((resolve, reject) => {
-      fs.readFile(filePath, "utf8", (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data);
-        }
-      });
+  if (!executed){
+    const connection = mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      password: "mariadb",
+      database: "musala",
     });
-  };
-
-  const main = async () => {
-    try {
-      sql = await leer("src/pages/api/musala.sql");
-      if (sql) {
-        const queries = sql.split(";").filter((query) => query.trim() !== "");
-
-        // almost, error 1064
-        /* Although a file exported by HeidiSQL is used, it gives this error, taking into account the pressure of time, the developer decides to leave it at this point and opt for a slightly more orthodox variant. */
-        for (const query of queries) {
-          try {
-            await prisma.$queryRaw`${query}`;
-          } catch (error) {
-            console.error("Error en la consulta:", error.message);
+  
+    const leer = (filePath) => {
+      return new Promise((resolve, reject) => {
+        fs.readFile(filePath, "utf8", (err, data) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(data);
           }
+        });
+      });
+    };
+  
+    const runSQLScript = async () => {
+      try {
+        let sqlScript = await leer("src/pages/api/musala.sql");
+        sqlScript = sqlScript.replace(/(\r\n|\n|\r)/gm, " ");
+  
+        const queries = sqlScript
+          .split(";")
+          .filter((query) => query.trim() !== "");
+  
+        for (const query of queries) {
+          await executeQuery(query);
         }
+        executed = true;
+        console.log("All queries executed successfully!");
+      } catch (error) {
+        console.error("Error executing queries:", error);
+      } finally {
+        connection.end();
       }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      await prisma.$disconnect();
-    }
-  };
+    };
+  
+    const executeQuery = async (query) => {
+      return new Promise((resolve, reject) => {
+        connection.query(query, (error, results) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(results);
+          }
+        });
+      });
+    };
+  
+    runSQLScript();
+    executed = true;
+  }
 
-  main();
-
-  return (
-    <div>
-      <Home />
-    </div>
-  );
+  return <div>
+    {!executed && <Waiting />}
+    {executed && <Home executed={executed} />}
+    </div>;
 }
 
 export default Servidor;

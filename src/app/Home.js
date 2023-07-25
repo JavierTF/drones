@@ -90,7 +90,7 @@ const columnVisibilityModel = {
   id: false,
 };
 
-export const Home = () => {
+export const Home = ({ executed }) => {
   const [openSMS, setOpenSMS] = useState({});
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -102,7 +102,7 @@ export const Home = () => {
 
   const [allRows, setAllRows] = useState([]);
   const [rows, setRows] = useState([]);
-  
+
   // const [selectedRow, setSelectedRow] = useState([]);
 
   const [available, setAvailable] = useState(true);
@@ -162,7 +162,7 @@ export const Home = () => {
         },
       };
       await enviarDatos(data);
-    }    
+    }
   };
 
   const create = async () => {
@@ -262,6 +262,8 @@ export const Home = () => {
     }
   };
 
+  let exec = executed;
+
   return (
     <>
       {/* sorry for the prop driling ha ha, to avoid this i could use a context  */}
@@ -274,22 +276,8 @@ export const Home = () => {
           dronesList={rows}
         />
       )}
-      <Grid
-        container
-        spacing={1}
-        direction="row"
-      >
+      <Grid container spacing={1} direction="row">
         <Grid item container sm={12} md={3} xl={2} lg={2}>
-          <Button
-            variant={"contained"}
-            startIcon={<AppsIcon />}
-            color={"primary"}
-            component="label"
-            sx={{ mb: 1 }}
-            // onClick={() => main()}
-          >
-            Load data
-          </Button>
           <Link
             href={"/Revision-manual.pdf"}
             target="_blank"
@@ -356,6 +344,20 @@ export const Home = () => {
               <Typography sx={{ mb: 2.5 }}>{`${showTime} secs`}</Typography>
             )}
           </Grid>
+        </Grid>
+        <Grid item container sm={12} md={3} xl={2} lg={2} style={{ height: "100%" }}  justifyContent="flex-end">
+          <Button
+            variant={"contained"}
+            startIcon={<AppsIcon />}
+            color={"primary"}
+            component="label"
+            onClick={() => {
+              exec = false;
+              window.location.reload();
+            }}
+          >
+            Load data
+          </Button>
         </Grid>
       </Grid>
       <Grid
