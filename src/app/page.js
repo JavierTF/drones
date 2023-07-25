@@ -1,11 +1,10 @@
 import Home from "./Home";
-import Waiting from "./Waiting";
 import { cargarDatosIniciales } from "./loadData";
 
 async function Servidor() {
-  const executed = await cargarDatosIniciales();
+  await cargarDatosIniciales();
 
-  return <div>{!executed ? <Waiting /> : <Home />}</div>;
+  return <div><Home /></div>;
 }
 
 export default Servidor;
