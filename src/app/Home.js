@@ -105,8 +105,6 @@ export const Home = () => {
 
   const [available, setAvailable] = useState(true);
 
-  const [interval, setInterval] = useState();
-
   useEffect(() => {
     // not so many custom functions were used since in most cases such action was executed only once in the test
     (async () => {
@@ -120,15 +118,10 @@ export const Home = () => {
     })();
 
     (async () => {
-      let inter = setInterval(async () => {
+      setInterval(async () => {
         await localTime();
       }, 5000);
-      setInterval(inter);
     })();
-
-    // return () => {
-    //   clearInterval(interval);
-    // };
   }, []);
 
   const localTime = async () => {
@@ -156,6 +149,7 @@ export const Home = () => {
 
   const droneLog = async () => {
     mostrarMensaje(setOpenSMS, "Saving logs", 5000, "info");
+    /* This was saving, I made some change at the last minute and now it doesn't save me even when it reaches the function */
     for (let elem of allRows) {
       let data = {
         table: "drone_log",
@@ -168,7 +162,6 @@ export const Home = () => {
       };
       await enviarDatos(data);
     }
-    clearInterval(interval);
   };
 
   const create = async () => {
