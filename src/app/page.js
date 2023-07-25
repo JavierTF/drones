@@ -1,24 +1,50 @@
-// Note.js - Server Component
+import Home from "./Home";
+import fs from "fs";
+import prisma from '../../lib/prisma'
 
-// import db from 'db'; 
-// (A1) We import from NoteEditor.js - a Client Component.
-import Home from './Home';
-import seed from '../pages/api/seed';
+async function Servidor() {
+  let sql;
 
-async function Servidor(props) {
-  const {id, isEditing} = props;
-  // (B) Can directly access server data sources during render, e.g. databases
-  // const note = await db.posts.get(id);
-  
+  const leer = (filePath) => {
+    return new Promise((resolve, reject) => {
+      fs.readFile(filePath, "utf8", (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  };
+
+  const main = async () => {
+    try {
+      sql = await leer("src/pages/api/musala.sql");
+      if (sql) {
+        const queries = sql.split(";").filter((query) => query.trim() !== "");
+
+        // almost, error 1064
+        /* Although a file exported by HeidiSQL is used, it gives this error, taking into account the pressure of time, the developer decides to leave it at this point and opt for a slightly more orthodox variant. */
+        // for (const query of queries) {
+        //   try {
+        //     await prisma.$queryRaw`${query}`;
+        //   } catch (error) {
+        //     console.error("Error en la consulta:", error.message);
+        //   }
+        // }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      await prisma.$disconnect();
+    }
+  };
+
+  main();
+
   return (
     <div>
-      {/* <h1>{'Jelouuuu'}</h1> */}
       <Home />
-      {/* <section>{note.body}</section>
-      {isEditing 
-        ? <NoteEditor note={note} />
-        : null
-      } */}
     </div>
   );
 }

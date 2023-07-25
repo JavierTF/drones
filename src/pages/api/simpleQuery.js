@@ -159,7 +159,6 @@ const Handle = async (req, res) => {
           )
         );
       } else if (currentData.table === "updateTimeToLog") {
-        console.log('--->ASDASD', currentData.datos.miliseconds);
         result =
           await prisma.$queryRaw`
           UPDATE config

@@ -193,7 +193,6 @@ export default function AddDrone({ dronesList }) {
           datos: { ...obj },
         };
         let res = await enviarDatos(data);
-        console.log("RES DRONE", res);
         if (res?.id) {
           if (v.length > 0) {
             let idsMedications = v.map((el) => el.id);
@@ -207,14 +206,15 @@ export default function AddDrone({ dronesList }) {
                   timelog: new Date(),
                 },
               };
-              let sended = await enviarDatos(data);              
+              await enviarDatos(data);              
             }
           }
+          
           mostrarMensaje(
             setOpenSMS,
-            `Drone ${sended[0].serial_number} created successfully`,
+            `Drone ${res.serial_number} created successfully`,
             5000,
-            "error"
+            "success"
           );
         }
       }

@@ -7,27 +7,12 @@ import {
   Box,
   Button,
   Grid,
-  CircularProgress,
   TextField,
-  Card,
-  CardContent,
-  Autocomplete,
-  IconButton,
-  AppBar,
-  Checkbox,
-  Dialog,
   Stack,
-  Toolbar,
-  Typography,
-  Tooltip,
 } from "@mui/material";
 
 import {
-  quitarValoresCero,
-  numRom,
-  extension,
   enviarDatos,
-  buscarUltimo,
   mostrarMensaje,
   validateString,
 } from "../../lib/utiles";
@@ -45,7 +30,6 @@ export default function AddMedication() {
     if (medication) {
       try {
         let j = JSON.parse(medication);
-        console.log("JJJ", j);
         if (Array.isArray(j)) {
           let valid = true;
           for (let elem of j) {
@@ -74,7 +58,6 @@ export default function AddMedication() {
 
           if (valid) {
             for (let elem of j) {
-              console.log('IMAGEN', elem.image);
               let data = {
                 table: "medication",
                 action: "create",
@@ -129,7 +112,7 @@ export default function AddMedication() {
       </Box>
       <Grid container justifyContent="flex-end" sx={{ mx: 7, mb: 2 }}>
         <Button
-          disabled={!medication}
+          disabled={medication == ''}
           variant="contained"
           color={"primary"}
           component="label"

@@ -162,8 +162,7 @@ export const Home = () => {
         },
       };
       await enviarDatos(data);
-    }
-    
+    }    
   };
 
   const create = async () => {

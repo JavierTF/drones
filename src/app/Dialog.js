@@ -22,7 +22,7 @@ export default function FullScreenDialog({ open, setOpen, title, actionDialog, d
 
   return (
     <div>
-      <Dialog maxWidth={(actionDialog === 'create' || actionDialog === 'addMedication') ? 'lg' : 'sm'} open={open} onClose={handleClose} sx={{ height: "auto", padding: 4, overflow: "auto" }}>
+      <Dialog id="dialog-app" maxWidth={(actionDialog === 'create' || actionDialog === 'addMedication') ? 'lg' : 'sm'} open={open} onClose={handleClose} sx={{ height: "auto", padding: 4, overflow: "auto" }}>
         <AppBar sx={{ position: "relative" }}>
           <Toolbar>
             <IconButton
