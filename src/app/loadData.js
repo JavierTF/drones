@@ -1,13 +1,20 @@
-// next.js no permite mucha flexibilidad con este módulo
-
+// global.js
 import fs from "fs";
 import mysql from "mysql2";
 import NodeCache from "node-cache";
 
 const cache = new NodeCache({ stdTTL: 14400 });
 
+let executed = cache.get("executed") || false;
+
 export async function cargarDatosIniciales() {
-  let executed = cache.get("executed");
+//   let executed = false;
+//   let executed = cache.get("executed");
+
+  setTimeout(() => {
+    executed = true;
+    cache.set("executed", true, 14400);
+  }, 10000);
 
   if (!executed) {
     const connection = mysql.createConnection({
@@ -64,7 +71,7 @@ export async function cargarDatosIniciales() {
     await runSQLScript();
     executed = true;
 
-    cache.set("executed", executed, 14400);
+    // cache.set("executed", executed, 14400);
   }
 
   return executed;

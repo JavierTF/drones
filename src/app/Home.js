@@ -263,15 +263,15 @@ export const Home = () => {
     }
   };
 
-  const handleClickLoadData = async () => {
-    // cache.set("executed", false, 14400);
-    let data = {
-      table: "cleanCache",
-      action: "raw",
-    };
-    await enviarDatos(data);
-    window.location.reload();
-  };
+  // const handleClickLoadData = async () => {
+  //   // cache.set("executed", false, 14400);
+  //   let data = {
+  //     table: "cleanCache",
+  //     action: "raw",
+  //   };
+  //   await enviarDatos(data);
+  //   window.location.reload();
+  // };
 
   return (
     <>
@@ -354,7 +354,7 @@ export const Home = () => {
             )}
           </Grid>
         </Grid>
-        <Grid
+        {/* <Grid
           item
           container
           sm={12}
@@ -373,7 +373,7 @@ export const Home = () => {
           >
             Load data
           </Button>
-        </Grid>
+        </Grid> */}
       </Grid>
       <Grid
         container
