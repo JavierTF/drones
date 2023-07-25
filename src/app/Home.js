@@ -90,7 +90,7 @@ const columnVisibilityModel = {
   id: false,
 };
 
-export const Home = ({ executed }) => {
+export const Home = () => {
   const [openSMS, setOpenSMS] = useState({});
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -103,9 +103,9 @@ export const Home = ({ executed }) => {
   const [allRows, setAllRows] = useState([]);
   const [rows, setRows] = useState([]);
 
-  // const [selectedRow, setSelectedRow] = useState([]);
-
   const [available, setAvailable] = useState(true);
+
+  const [interval, setInterval] = useState();
 
   useEffect(() => {
     // not so many custom functions were used since in most cases such action was executed only once in the test
@@ -120,10 +120,15 @@ export const Home = ({ executed }) => {
     })();
 
     (async () => {
-      setInterval(async () => {
+      let inter = setInterval(async () => {
         await localTime();
       }, 5000);
+      setInterval(inter);
     })();
+
+    // return () => {
+    //   clearInterval(interval);
+    // };
   }, []);
 
   const localTime = async () => {
@@ -163,6 +168,7 @@ export const Home = ({ executed }) => {
       };
       await enviarDatos(data);
     }
+    clearInterval(interval);
   };
 
   const create = async () => {
@@ -206,11 +212,6 @@ export const Home = ({ executed }) => {
     setTitle("Adding medications JSON input");
     setOpenDialog(true);
   };
-
-  // const onRowsSelectionHandler = (ids) => {
-  //   const selectedRowsData = ids.map((id) => rows.find((row) => row.id === id));
-  //   setSelectedRow(selectedRowsData);
-  // };
 
   const handleChangeAvailable = () => {
     setAvailable(() => !available);
@@ -262,7 +263,15 @@ export const Home = ({ executed }) => {
     }
   };
 
-  let exec = executed;
+  const handleClickLoadData = async () => {
+    // cache.set("executed", false, 14400);
+    let data = {
+      table: "cleanCache",
+      action: "raw",
+    };
+    await enviarDatos(data);
+    window.location.reload();
+  };
 
   return (
     <>
@@ -345,16 +354,22 @@ export const Home = ({ executed }) => {
             )}
           </Grid>
         </Grid>
-        <Grid item container sm={12} md={3} xl={2} lg={2} style={{ height: "100%" }}  justifyContent="flex-end">
+        <Grid
+          item
+          container
+          sm={12}
+          md={3}
+          xl={2}
+          lg={2}
+          style={{ height: "100%" }}
+          justifyContent="flex-end"
+        >
           <Button
             variant={"contained"}
             startIcon={<AppsIcon />}
             color={"primary"}
             component="label"
-            onClick={() => {
-              exec = false;
-              window.location.reload();
-            }}
+            onClick={() => { handleClickLoadData() }}
           >
             Load data
           </Button>

@@ -2,7 +2,6 @@
 
 - el log de los drones no me sale uno solo, sino que me sale 25 veces
 - Cambiar frecuencia setTimeout ?
-- cargar base de datos
 
 / ------------------------------------------------- /
 
