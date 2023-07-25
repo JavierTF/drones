@@ -209,13 +209,18 @@ export default function AddDrone({ dronesList }) {
               await enviarDatos(data);              
             }
           }
-          
           mostrarMensaje(
             setOpenSMS,
             `Drone ${res.serial_number} created successfully`,
             5000,
             "success"
           );
+          setSerialNumber('');
+          setValueModel('');
+          setValueState('');
+          setWeightLimit('');
+          setBatteryCapacity('');
+          setV([]);
         }
       }
     }
